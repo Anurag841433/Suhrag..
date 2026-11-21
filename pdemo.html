@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suhrag Healthtech - Get Token Flow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --accent-green: #10b981;
+      --accent-orange: #f59e0b;
+      --bg-page: #f1f6fa;
+      --card-bg: #ffffff;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: #ffffff;
+      border-right: 1px solid var(--border);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-dark);
+      padding: 0 8px 20px 8px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      background: var(--primary);
+      border-radius: 9px;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+
+    .user-box {
+      padding: 16px 8px;
+      border-bottom: 1px solid #f1f5f9;
+      margin-bottom: 16px;
+    }
+
+    .user-name { font-size: 15px; font-weight: 800; }
+    .user-id { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 2px; }
+
+    .nav-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .nav-list a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #334155;
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+    .nav-list a.active { background: var(--primary); color: #fff; }
+
+    /* Main Viewport */
+    .main-viewport {
+      flex: 1;
+      padding: 24px 34px 40px 34px;
+      overflow-y: auto;
+      height: 100vh;
+    }
+
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    /* Giant "GET YOUR TOKEN" Action Button */
+    .btn-get-token-hero {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      padding: 18px 30px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.35);
+      transition: all 0.2s;
+    }
+    .btn-get-token-hero:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(2, 132, 199, 0.45);
+    }
+
+    /* Dashboard Status Card */
+    .token-dashboard-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px;
+      margin-top: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .token-display-big {
+      font-size: 56px;
+      font-weight: 900;
+      color: var(--primary);
+      line-height: 1;
+      margin-top: 6px;
+    }
+
+    /* ================= MODAL POPUP FOR 6 STEPS ================= */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-container {
+      background: #ffffff;
+      width: 100%;
+      max-width: 680px;
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+      max-height: 90vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 20px 26px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 10;
+    }
+
+    .modal-header h3 { font-size: 18px; font-weight: 800; color: var(--text-dark); }
+    .btn-close-modal {
+      background: #f1f5f9;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    /* Stepper Bar */
+    .step-progress-bar {
+      display: flex;
+      justify-content: space-between;
+      padding: 16px 26px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .step-dot-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .step-dot-wrap.active { color: var(--primary); }
+    .step-circle {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: #64748b;
+    }
+    .step-dot-wrap.active .step-circle { background: var(--primary); color: #fff; }
+
+    .modal-body {
+      padding: 26px;
+      flex: 1;
+    }
+
+    /* Booking Type Toggle (Myself vs Family Member) */
+    .toggle-booking-target {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .target-btn {
+      padding: 12px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: #f8fafc;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .target-btn.active {
+      border-color: var(--primary);
+      background: #eff6ff;
+      color: var(--primary);
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .form-field { margin-bottom: 14px; }
+    label { display: block; font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 5px; }
+    input, select {
+      width: 100%;
+      padding: 11px 13px;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      font-size: 13.5px;
+      outline: none;
+      background: #fff;
+    }
+    input:focus, select:focus { border-color: var(--primary); }
+
+    /* Doctor Card Selection */
+    .doctor-item-card {
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s;
+    }
+    .doctor-item-card:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(2, 132, 199, 0.1); }
+    .doctor-item-card.selected { border-color: var(--primary); background: #f0f9ff; }
+
+    .doc-badge-verified {
+      background: #ecfdf5;
+      color: var(--accent-green);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+
+    .btn-select-doc {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Payment Radio Items */
+    .pay-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .pay-option input { width: auto; }
+
+    .modal-footer {
+      padding: 18px 26px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8fafc;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+    }
+
+    .btn-step-action {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-step-prev {
+      background: #e2e8f0;
+      color: #334155;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Success Card */
+    .success-badge-card {
+      text-align: center;
+      padding: 20px 10px;
+    }
+    .token-hero-badge {
+      font-size: 68px;
+      font-weight: 900;
+      color: var(--primary);
+      line-height: 1;
+      margin: 10px 0;
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- Left Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">+</div>
+      <span>Suhrag Healthtech</span>
+    </div>
+    <div class="user-box">
+      <div class="user-name">Rahul Sharma</div>
+      <div class="user-id">Patient ID: SHP-8842</div>
+    </div>
+    <ul class="nav-list">
+      <li><a href="#" class="active"><span>🏠</span> Dashboard</a></li>
+      <li><a href="#"><span>🎫</span> My Tokens</a></li>
+      <li><a href="#"><span>👥</span> Live Queue</a></li>
+      <li><a href="#"><span>👤</span> Profile</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Viewport -->
+  <main class="main-viewport">
+    
+    <div class="header-bar">
+      <div>
+        <h1 style="font-size: 24px; font-weight: 800;">Patient Dashboard</h1>
+        <p style="font-size: 13px; color: var(--text-muted); font-weight: 600;">Manage your OPD queue & appointments</p>
+      </div>
+
+      <!-- STEP 1 TRIGGER: Giant Button -->
+      <button class="btn-get-token-hero" onclick="openBookingModal()">
+        <span>🎫</span> GET YOUR TOKEN
+      </button>
+    </div>
+
+    <!-- Active Token Live Status on Dashboard -->
+    <div class="token-dashboard-card" id="dashboardActiveTokenCard">
+      <div>
+        <div style="font-size: 13px; font-weight: 700; color: var(--primary);">ACTIVE OPD TOKEN</div>
+        <div class="token-display-big" id="dashTokenNumber">#025</div>
+        <div style="font-size: 16px; font-weight: 800; margin-top: 4px;" id="dashDoctorName">Dr. Rahul Kumar (General Physician)</div>
+        <div style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">Rahul Clinic, Patna, Bihar</div>
+      </div>
+      <div style="text-align: right;">
+        <div style="background: #ecfdf5; color: #059669; padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 12px; display: inline-block;">
+          ● In Queue (4 Patients Ahead)
+        </div>
+        <div style="font-size: 13px; font-weight: 700; color: #334155; margin-top: 8px;">Est. Wait: ~35 Mins</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ================= 6-STEP BOOKING MODAL ================= -->
+  <div class="modal-overlay hidden" id="bookingModal">
+    <div class="modal-container">
+      
+      <div class="modal-header">
+        <h3 id="modalStepTitle">Step 2: Patient Details</h3>
+        <button class="btn-close-modal" onclick="closeBookingModal()">✕</button>
+      </div>
+
+      <!-- Step Indicator -->
+      <div class="step-progress-bar">
+        <div class="step-dot-wrap active" id="dot-2"><div class="step-circle">2</div> Details</div>
+        <div class="step-dot-wrap" id="dot-3"><div class="step-circle">3</div> Location</div>
+        <div class="step-dot-wrap" id="dot-4"><div class="step-circle">4</div> Doctor</div>
+        <div class="step-dot-wrap" id="dot-5"><div class="step-circle">5</div> Payment</div>
+        <div class="step-dot-wrap" id="dot-6"><div class="step-circle">6</div> Token</div>
+      </div>
+
+      <div class="modal-body">
+        
+        <!-- ================= STEP 2: PATIENT DETAILS ================= -->
+        <div id="step-content-2">
+          <!-- Suggestion: Myself vs Family Member Selection -->
+          <div class="toggle-booking-target">
+            <button class="target-btn active" id="btnTargetMyself" onclick="selectBookingTarget('myself')">
+              👤 Book for Myself
+            </button>
+            <button class="target-btn" id="btnTargetFamily" onclick="selectBookingTarget('family')">
+              👨‍👩‍👧 Book for Family Member
+            </button>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-field">
+              <label>Patient Full Name</label>
+              <input type="text" id="pName" value="Rahul Sharma" required>
+            </div>
+            <div class="form-grid-2" style="margin-bottom: 0;">
+              <div>
+                <label>Age</label>
+                <input type="number" id="pAge" value="25" required>
+              </div>
+              <div>
+                <label>Gender</label>
+                <select id="pGender">
+                  <option value="Male" selected>Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-field">
+              <label>State</label>
+              <input type="text" id="pState" value="Bihar" required>
+            </div>
+            <div class="form-field">
+              <label>District</label>
+              <input type="text" id="pDistrict" value="Patna" required>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-field">
+              <label>Village / Mohalla</label>
+              <input type="text" id="pVillage" value="Danapur" required>
+            </div>
+            <div class="form-field">
+              <label>PIN Code</label>
+              <input type="tel" id="pPin" maxlength="6" value="801503" required>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label>Mobile Number (For Live Updates via SMS)</label>
+            <input type="tel" id="pMobile" maxlength="10" value="9876543210" required>
+          </div>
+        </div>
+
+        <!-- ================= STEP 3: STATE & DISTRICT SELECTION ================= -->
+        <div id="step-content-3" class="hidden">
+          <div style="font-size: 14px; font-weight: 700; margin-bottom: 14px; color: var(--primary);">
+            📍 SELECT YOUR LOCATION TO DISCOVER REGISTERED DOCTORS
+          </div>
+          
+          <div class="form-field">
+            <label>Select State</label>
+            <select id="locState" onchange="filterLocations()">
+              <option value="Bihar" selected>Bihar</option>
+              <option value="West Bengal">West Bengal</option>
+              <option value="Jharkhand">Jharkhand</option>
+              <option value="Uttar Pradesh">Uttar Pradesh</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label>Select District</label>
+            <select id="locDistrict">
+              <option value="Patna" selected>Patna</option>
+              <option value="Kishanganj">Kishanganj</option>
+              <option value="Gaya">Gaya</option>
+              <option value="Muzaffarpur">Muzaffarpur</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label>Village / Locality / Mohalla</label>
+            <input type="text" id="locVillage" value="Danapur">
+          </div>
+        </div>
+
+        <!-- ================= STEP 4: DOCTOR SEARCH & SELECTION ================= -->
+        <div id="step-content-4" class="hidden">
+          <div style="margin-bottom: 14px;">
+            <input type="text" id="searchDocInput" placeholder="🔍 Search doctor name, clinic or specialty..." onkeyup="searchDoctors()">
+          </div>
+
+          <div id="doctorCardsList">
+            <!-- Doctor 1 -->
+            <div class="doctor-item-card selected" id="docCard1" onclick="selectDoctor('Dr. Rahul Kumar', 'General Physician', 'Rahul Clinic', 300, 12, 'docCard1')">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <strong style="font-size: 15px;">Dr. Rahul Kumar</strong>
+                  <span class="doc-badge-verified">✓ Verified</span>
+                </div>
+                <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 2px;">General Physician • Rahul Clinic, Patna</div>
+                <div style="font-size: 13px; font-weight: 700; color: var(--primary); margin-top: 4px;">Fee: ₹300 &nbsp;|&nbsp; Available Tokens: 12</div>
+              </div>
+              <button class="btn-select-doc">Selected</button>
+            </div>
+
+            <!-- Doctor 2 -->
+            <div class="doctor-item-card" id="docCard2" onclick="selectDoctor('Dr. Amit Kumar', 'Cardiologist', 'City Care Hospital', 500, 8, 'docCard2')">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <strong style="font-size: 15px;">Dr. Amit Kumar</strong>
+                  <span class="doc-badge-verified">✓ Verified</span>
+                </div>
+                <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 2px;">Cardiologist • City Care Hospital, Patna</div>
+                <div style="font-size: 13px; font-weight: 700; color: var(--primary); margin-top: 4px;">Fee: ₹500 &nbsp;|&nbsp; Available Tokens: 08</div>
+              </div>
+              <button class="btn-select-doc">Select Doctor</button>
+            </div>
+
+            <!-- Doctor 3 -->
+            <div class="doctor-item-card" id="docCard3" onclick="selectDoctor('Dr. Priya Singh', 'Gynecologist', 'Priya Clinic', 400, 10, 'docCard3')">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <strong style="font-size: 15px;">Dr. Priya Singh</strong>
+                  <span class="doc-badge-verified">✓ Verified</span>
+                </div>
+                <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 2px;">Gynecologist • Priya Clinic, Patna</div>
+                <div style="font-size: 13px; font-weight: 700; color: var(--primary); margin-top: 4px;">Fee: ₹400 &nbsp;|&nbsp; Available Tokens: 10</div>
+              </div>
+              <button class="btn-select-doc">Select Doctor</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= STEP 5: PAYMENT PAGE ================= -->
+        <div id="step-content-5" class="hidden">
+          <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 18px;">
+            <div style="font-size: 12px; color: var(--text-muted); font-weight: 700;">APPOINTMENT SUMMARY</div>
+            <div style="font-size: 16px; font-weight: 800; margin-top: 4px;" id="payDocName">Dr. Rahul Kumar</div>
+            <div style="font-size: 13px; color: #334155;" id="payDocClinic">Rahul Clinic, Patna</div>
+            <div style="font-size: 13px; margin-top: 4px;">Patient: <strong id="payPatientName">Rahul Sharma</strong></div>
+            <div style="border-top: 1px dashed var(--border); margin-top: 10px; padding-top: 8px; display: flex; justify-content: space-between;">
+              <span style="font-weight: 700;">Consultation Fee</span>
+              <strong style="font-size: 16px; color: var(--primary);" id="payTotalAmount">₹300</strong>
+            </div>
+          </div>
+
+          <label style="margin-bottom: 8px;">Choose Payment Method</label>
+          <label class="pay-option">
+            <input type="radio" name="paymethod" value="UPI" checked>
+            <span>📱 UPI (GPay / PhonePe / Paytm / BHIM)</span>
+          </label>
+          <label class="pay-option">
+            <input type="radio" name="paymethod" value="Card">
+            <span>💳 Debit / Credit Card</span>
+          </label>
+          <label class="pay-option">
+            <input type="radio" name="paymethod" value="NetBanking">
+            <span>🏦 Net Banking</span>
+          </label>
+          <!-- Cash at Clinic Option (Future-Proof Support) -->
+          <label class="pay-option" style="border-color: #cbd5e1;">
+            <input type="radio" name="paymethod" value="Cash">
+            <span>💵 Pay at Clinic Desk (Offline Cash Support)</span>
+          </label>
+        </div>
+
+        <!-- ================= STEP 6: TOKEN GENERATED SUCCESS ================= -->
+        <div id="step-content-6" class="hidden">
+          <div class="success-badge-card">
+            <div style="font-size: 32px;">🎉</div>
+            <h2 style="font-size: 20px; font-weight: 800; color: #059669; margin-top: 4px;">BOOKING SUCCESSFUL!</h2>
+            <p style="font-size: 12px; color: var(--text-muted); font-weight: 600;">SUHRAG HEALTHTECH - LIVE OPD PASS</p>
+
+            <div style="background: #f0f9ff; border: 1.5px dashed var(--primary); border-radius: 16px; padding: 18px; margin: 16px 0;">
+              <div style="font-size: 12px; font-weight: 800; color: #0369a1; text-transform: uppercase;">YOUR CONFIRMED TOKEN</div>
+              <div class="token-hero-badge" id="successTokenNumber">#025</div>
+              <div style="font-size: 14px; font-weight: 700; color: #334155;" id="successDocTitle">Dr. Rahul Kumar • Rahul Clinic</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Date: Today, 31 October 2026</div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; background: #f8fafc; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 600;">
+              <div>Patients Ahead: <strong style="color: var(--primary);">04</strong></div>
+              <div>Estimated Wait: <strong style="color: #d97706;">35 Mins</strong></div>
+              <div>Patient: <strong id="successPatientLabel">Rahul Sharma</strong></div>
+              <div>Payment: <strong style="color: #059669;">CONFIRMED</strong></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Action Buttons Footer -->
+      <div class="modal-footer">
+        <button class="btn-step-prev hidden" id="btnPrevStep" onclick="goToPrevStep()">Back</button>
+        <div style="flex: 1;"></div>
+        <button class="btn-step-action" id="btnNextStep" onclick="goToNextStep()">Continue</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // State management
+    let currentStep = 2;
+    let selectedDoctor = {
+      name: "Dr. Rahul Kumar",
+      spec: "General Physician",
+      clinic: "Rahul Clinic",
+      fee: 300,
+      tokens: 12
+    };
+
+    // User Profile Data for Auto-fill
+    const userProfile = {
+      name: "Rahul Sharma",
+      age: "25",
+      gender: "Male",
+      state: "Bihar",
+      district: "Patna",
+      village: "Danapur",
+      pin: "801503",
+      mobile: "9876543210"
+    };
+
+    function openBookingModal() {
+      currentStep = 2;
+      updateStepUI();
+      document.getElementById('bookingModal').classList.remove('hidden');
+    }
+
+    function closeBookingModal() {
+      document.getElementById('bookingModal').classList.add('hidden');
+    }
+
+    // "Book for Myself" vs "Book for Family Member" Switch
+    function selectBookingTarget(target) {
+      const btnMyself = document.getElementById('btnTargetMyself');
+      const btnFamily = document.getElementById('btnTargetFamily');
+
+      if (target === 'myself') {
+        btnMyself.classList.add('active');
+        btnFamily.classList.remove('active');
+        // Auto-fill everything
+        document.getElementById('pName').value = userProfile.name;
+        document.getElementById('pAge').value = userProfile.age;
+        document.getElementById('pGender').value = userProfile.gender;
+        document.getElementById('pState').value = userProfile.state;
+        document.getElementById('pDistrict').value = userProfile.district;
+        document.getElementById('pVillage').value = userProfile.village;
+        document.getElementById('pPin').value = userProfile.pin;
+        document.getElementById('pMobile').value = userProfile.mobile;
+      } else {
+        btnFamily.classList.add('active');
+        btnMyself.classList.remove('active');
+        // Clear personal info, keep address and contact default
+        document.getElementById('pName').value = "";
+        document.getElementById('pAge').value = "";
+        document.getElementById('pGender').value = "Male";
+        document.getElementById('pState').value = userProfile.state;
+        document.getElementById('pDistrict').value = userProfile.district;
+        document.getElementById('pVillage').value = userProfile.village;
+        document.getElementById('pPin').value = userProfile.pin;
+        document.getElementById('pMobile').value = userProfile.mobile;
+      }
+    }
+
+    // Step Navigation Engine
+    function goToNextStep() {
+      if (currentStep === 2) {
+        if (!document.getElementById('pName').value) {
+          alert('Kripya Patient ka Naam bharein.');
+          return;
+        }
+        currentStep = 3;
+      } else if (currentStep === 3) {
+        currentStep = 4;
+      } else if (currentStep === 4) {
+        // Sync Step 5 Payment Details
+        document.getElementById('payDocName').innerText = selectedDoctor.name + " (" + selectedDoctor.spec + ")";
+        document.getElementById('payDocClinic').innerText = selectedDoctor.clinic + ", " + document.getElementById('locDistrict').value;
+        document.getElementById('payPatientName').innerText = document.getElementById('pName').value;
+        document.getElementById('payTotalAmount').innerText = "₹" + selectedDoctor.fee;
+        currentStep = 5;
+      } else if (currentStep === 5) {
+        // Atomic Booking & Token Simulation
+        document.getElementById('successPatientLabel').innerText = document.getElementById('pName').value;
+        document.getElementById('successDocTitle').innerText = selectedDoctor.name + " • " + selectedDoctor.clinic;
+        
+        // Update main dashboard card
+        document.getElementById('dashTokenNumber').innerText = "#025";
+        document.getElementById('dashDoctorName').innerText = selectedDoctor.name + " (" + selectedDoctor.spec + ")";
+        
+        currentStep = 6;
+      } else if (currentStep === 6) {
+        closeBookingModal();
+        return;
+      }
+
+      updateStepUI();
+    }
+
+    function goToPrevStep() {
+      if (currentStep > 2) {
+        currentStep--;
+        updateStepUI();
+      }
+    }
+
+    function updateStepUI() {
+      // Hide all panels
+      for (let i = 2; i <= 6; i++) {
+        document.getElementById('step-content-' + i).classList.add('hidden');
+        const dot = document.getElementById('dot-' + i);
+        if (dot) dot.classList.remove('active');
+      }
+
+      // Show current step panel
+      document.getElementById('step-content-' + currentStep).classList.remove('hidden');
+      const activeDot = document.getElementById('dot-' + currentStep);
+      if (activeDot) activeDot.classList.add('active');
+
+      const titleEl = document.getElementById('modalStepTitle');
+      const prevBtn = document.getElementById('btnPrevStep');
+      const nextBtn = document.getElementById('btnNextStep');
+
+      if (currentStep === 2) {
+        titleEl.innerText = "Step 2: Patient Details";
+        prevBtn.classList.add('hidden');
+        nextBtn.innerText = "Continue to Location";
+      } else if (currentStep === 3) {
+        titleEl.innerText = "Step 3: Select State & District";
+        prevBtn.classList.remove('hidden');
+        nextBtn.innerText = "Search Doctors";
+      } else if (currentStep === 4) {
+        titleEl.innerText = "Step 4: Select Doctor";
+        prevBtn.classList.remove('hidden');
+        nextBtn.innerText = "Proceed to Payment";
+      } else if (currentStep === 5) {
+        titleEl.innerText = "Step 5: Payment Details";
+        prevBtn.classList.remove('hidden');
+        nextBtn.innerText = "Pay & Confirm Token";
+      } else if (currentStep === 6) {
+        titleEl.innerText = "Step 6: Token Generated";
+        prevBtn.classList.add('hidden');
+        nextBtn.innerText = "Go to Live Queue";
+      }
+    }
+
+    // Doctor Selection Function
+    function selectDoctor(name, spec, clinic, fee, tokens, cardId) {
+      selectedDoctor = { name, spec, clinic, fee, tokens };
+
+      document.querySelectorAll('.doctor-item-card').forEach(c => {
+        c.classList.remove('selected');
+        c.querySelector('button').innerText = "Select Doctor";
+      });
+
+      const selectedCard = document.getElementById(cardId);
+      selectedCard.classList.add('selected');
+      selectedCard.querySelector('button').innerText = "Selected";
+    }
+
+    // Dynamic Doctor Filter Search
+    function searchDoctors() {
+      const q = document.getElementById('searchDocInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.doctor-item-card');
+      cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        card.style.display = text.includes(q) ? 'flex' : 'none';
+      });
+    }
+  </script>
+
+</body>
+</html>

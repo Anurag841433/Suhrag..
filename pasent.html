@@ -1,0 +1,236 @@
+import React, { useState } from "react";
+import "./DoctorDashboard.css";
+
+function DoctorDashboard() {
+  const [queueActive, setQueueActive] = useState(true);
+
+  const [patients, setPatients] = useState([
+    { token: "T001", name: "Rahul Kumar", age: 28, status: "Waiting" },
+    { token: "T002", name: "Priya Sharma", age: 35, status: "Waiting" },
+    { token: "T003", name: "Amit Singh", age: 42, status: "Waiting" },
+    { token: "T004", name: "Neha Kumari", age: 25, status: "Waiting" },
+  ]);
+
+  const currentPatient = patients.find(
+    (patient) => patient.status === "Current"
+  );
+
+  const waitingPatients = patients.filter(
+    (patient) => patient.status === "Waiting"
+  );
+
+  const completedPatients = patients.filter(
+    (patient) => patient.status === "Completed"
+  );
+
+  const nextPatient = () => {
+    if (!queueActive) return;
+
+    setPatients((prev) => {
+      const updated = prev.map((p) =>
+        p.status === "Current" ? { ...p, status: "Completed" } : p
+      );
+
+      const next = updated.find((p) => p.status === "Waiting");
+
+      if (next) {
+        next.status = "Current";
+      }
+
+      return [...updated];
+    });
+  };
+
+  const addPatient = () => {
+    const name = prompt("Enter patient name:");
+    const age = prompt("Enter patient age:");
+
+    if (!name || !age || isNaN(age)) return;
+
+    const token = "T" + String(Date.now()).slice(-4);
+
+    setPatients((prev) => [
+      ...prev,
+      {
+        token,
+        name,
+        age: Number(age),
+        status: "Waiting",
+      },
+    ]);
+  };
+
+  const startQueue = () => {
+    setQueueActive(true);
+
+    setPatients((prev) => {
+      if (prev.some((p) => p.status === "Current")) return prev;
+
+      const updated = [...prev];
+      const next = updated.find((p) => p.status === "Waiting");
+
+      if (next) next.status = "Current";
+
+      return updated;
+    });
+  };
+
+  return (
+    <div className="doctor-layout">
+
+      {/* Sidebar */}
+      <aside className="sidebar">
+
+        <h2>🩺 Suhrag</h2>
+        <p className="brand">Healthtech</p>
+
+        <nav>
+          <a className="active">🏠 Dashboard</a>
+          <a>👥 Patients</a>
+          <a>🎫 Appointments</a>
+          <a>📋 Patient History</a>
+          <a>💰 Earnings</a>
+          <a>🏥 Clinic Profile</a>
+          <a>⚙ Settings</a>
+          <a href="/doctor-login">🚪 Logout</a>
+        </nav>
+
+      </aside>
+
+      {/* Main Content */}
+      <main className="main-content">
+
+        <header className="topbar">
+          <div>
+            <h2>Doctor Dashboard</h2>
+            <p>Welcome back, Doctor!</p>
+          </div>
+
+          <div className="doctor-info">
+            <span>Dr. Rahul Kumar</span>
+            <div className="avatar">RK</div>
+          </div>
+        </header>
+
+        {/* Statistics */}
+        <section className="stats-grid">
+
+          <div className="stat-card">
+            <h3>Total Patients</h3>
+            <h1>{patients.length}</h1>
+          </div>
+
+          <div className="stat-card">
+            <h3>Waiting Patients</h3>
+            <h1>{waitingPatients.length}</h1>
+          </div>
+
+          <div className="stat-card">
+            <h3>Completed</h3>
+            <h1>{completedPatients.length}</h1>
+          </div>
+
+          <div className="stat-card">
+            <h3>Queue Status</h3>
+            <h1>{queueActive ? "Active" : "Paused"}</h1>
+          </div>
+
+        </section>
+
+        {/* Queue Management */}
+        <section className="queue-section">
+
+          <div className="section-heading">
+            <h2>Patient Queue Management</h2>
+
+            <button
+              className={queueActive ? "pause-btn" : "start-btn"}
+              onClick={() =>
+                queueActive
+                  ? setQueueActive(false)
+                  : startQueue()
+              }
+            >
+              {queueActive ? "Pause Queue" : "Start Queue"}
+            </button>
+          </div>
+
+          {/* Current Patient */}
+          <div className="current-patient">
+
+            <div>
+              <h3>Current Patient</h3>
+
+              {currentPatient ? (
+                <>
+                  <h2>{currentPatient.name}</h2>
+                  <p>Token: {currentPatient.token}</p>
+                  <p>Age: {currentPatient.age}</p>
+                </>
+              ) : (
+                <p>No patient currently being attended.</p>
+              )}
+            </div>
+
+            <button
+              className="complete-btn"
+              onClick={nextPatient}
+              disabled={!queueActive || !currentPatient}
+            >
+              Complete Consultation
+            </button>
+
+          </div>
+
+          {/* Waiting List */}
+          <div className="waiting-list">
+
+            <div className="section-heading">
+              <h2>Waiting Patients</h2>
+
+              <button className="add-btn" onClick={addPatient}>
+                + Add Walk-in Patient
+              </button>
+            </div>
+
+            <div className="table-wrapper">
+              <table>
+
+                <thead>
+                  <tr>
+                    <th>Token</th>
+                    <th>Patient Name</th>
+                    <th>Age</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {patients.map((patient) => (
+                    <tr key={patient.token}>
+                      <td>{patient.token}</td>
+                      <td>{patient.name}</td>
+                      <td>{patient.age}</td>
+                      <td>
+                        <span className={`status ${patient.status.toLowerCase()}`}>
+                          {patient.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+
+              </table>
+            </div>
+
+          </div>
+
+        </section>
+
+      </main>
+
+    </div>
+  );
+}
+
+export default DoctorDashboard;

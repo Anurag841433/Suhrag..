@@ -1,0 +1,1833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suhrag Healthtech - Final Patient Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #1a56db;
+      --primary-hover: #1e40af;
+      --primary-light: #eff6ff;
+      --bg-main: #f3f6fb;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --green: #16a34a;
+      --green-bg: #dcfce7;
+      --orange: #d97706;
+      --orange-bg: #fef3c7;
+      --red: #dc2626;
+      --red-bg: #fee2e2;
+      --purple: #7e22ce;
+      --purple-bg: #f3e8ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-dark);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ================= LEFT SIDEBAR (9 ITEMS) ================= */
+    .sidebar {
+      width: 255px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 18px 14px;
+      position: fixed;
+      height: 100vh;
+      left: 0;
+      top: 0;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--primary);
+      color: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .brand-name { font-weight: 800; font-size: 16px; line-height: 1.1; }
+
+    .profile-box {
+      text-align: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #dbeafe;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0 auto 6px;
+      border: 2px solid var(--primary);
+      overflow: hidden;
+    }
+
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .profile-box h4 { font-size: 14.5px; font-weight: 700; }
+    .profile-box p { font-size: 11.5px; color: var(--text-muted); margin: 2px 0 4px; }
+    .status-active { font-size: 11.5px; font-weight: 600; color: var(--green); }
+
+    .nav-menu { list-style: none; margin-top: 10px; flex: 1; overflow-y: auto; }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      border-radius: 8px;
+      color: #475569;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 3px;
+      transition: all 0.2s;
+    }
+
+    .nav-item:hover { background: #f1f5f9; color: var(--primary); }
+    .nav-item.active { background: var(--primary); color: white; font-weight: 600; }
+    .nav-left { display: flex; align-items: center; gap: 10px; }
+    .nav-left i { width: 16px; text-align: center; }
+
+    .badge-count {
+      background: var(--red);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 999px;
+    }
+
+    .sidebar-footer {
+      background: var(--primary-light);
+      padding: 10px 12px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: 8px;
+    }
+
+    /* ================= MAIN WRAPPER ================= */
+    .main-wrapper { margin-left: 255px; flex: 1; display: flex; flex-direction: column; }
+
+    .topbar {
+      background: var(--surface);
+      height: 66px;
+      border-bottom: 1px solid var(--border);
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topbar-title h3 { font-size: 18px; font-weight: 700; }
+    .topbar-title span { font-size: 12px; color: var(--text-muted); }
+
+    .btn-emergency {
+      background: var(--red);
+      color: white;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .content-area { padding: 24px 28px; max-width: 1280px; }
+
+    /* Hero Banner */
+    .hero-banner {
+      background: linear-gradient(95deg, #dbeafe 0%, #bfdbfe 55%, #1e40af 100%);
+      border-radius: 14px;
+      padding: 22px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .hero-text h1 { font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
+    .hero-text p { font-size: 13.5px; color: #334155; font-weight: 500; }
+
+    .trust-pill {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      color: white;
+      padding: 10px 16px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    /* 4 Core Action Cards */
+    .core-actions-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .action-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .action-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(26, 86, 219, 0.08);
+    }
+
+    .action-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .action-card h4 { font-size: 13.5px; font-weight: 700; margin-bottom: 2px; }
+    .action-card p { font-size: 11px; color: var(--text-muted); }
+
+    /* Dashboard Grid */
+    .dashboard-grid { display: grid; grid-template-columns: 1.55fr 1fr; gap: 22px; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Token Card Split */
+    .token-card-split { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center; }
+
+    .token-left { text-align: center; padding-right: 16px; border-right: 1px solid var(--border); }
+
+    .big-token { font-size: 50px; font-weight: 800; color: var(--primary); line-height: 1.1; margin: 6px 0; }
+
+    .id-tag {
+      display: inline-block;
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      color: #334155;
+      font-family: monospace;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 5px;
+      margin-bottom: 4px;
+    }
+
+    .token-right { display: flex; flex-direction: column; gap: 10px; }
+    .info-row { display: flex; align-items: flex-start; gap: 10px; }
+    .info-icon {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: var(--primary-light); color: var(--primary);
+      display: flex; align-items: center; justify-content: center; font-size: 13px;
+    }
+
+    /* Buttons & Badges */
+    .btn {
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-success { background: var(--green); color: white; }
+    .btn-outline { background: white; color: var(--primary); border: 1px solid var(--primary); }
+    .btn-outline:hover { background: var(--primary-light); }
+    .btn-sm { padding: 6px 11px; font-size: 12px; }
+    .w-100 { width: 100%; }
+
+    .badge { padding: 3px 9px; border-radius: 6px; font-size: 11px; font-weight: 700; display: inline-block; }
+    .b-confirmed { background: #dbeafe; color: var(--primary); }
+    .b-waiting { background: var(--orange-bg); color: var(--orange); }
+    .b-in { background: var(--green-bg); color: var(--green); }
+    .b-completed { background: #e2e8f0; color: #334155; }
+    .b-cancelled { background: var(--red-bg); color: var(--red); }
+    .b-noshow { background: var(--purple-bg); color: var(--purple); }
+
+    /* Live Queue */
+    .queue-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      border: 1px solid var(--border);
+    }
+    .queue-item.current { background: var(--primary-light); border-color: #93c5fd; font-weight: 700; }
+
+    /* Record Cards */
+    .record-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 12px;
+      background: #f8fafc;
+    }
+
+    .record-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border);
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .record-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    /* Profile Layout & Forms */
+    .profile-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: #334155; }
+    .form-group select, .form-group input {
+      width: 100%; padding: 9px 11px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; background: #fff;
+    }
+    .form-group input:disabled { background: #f1f5f9; color: #64748b; font-weight: 600; }
+
+    .input-with-btn { display: flex; gap: 8px; }
+    .input-with-btn input { flex: 1; }
+
+    .otp-panel {
+      background: #eff6ff;
+      border: 1px solid #93c5fd;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 6px;
+      font-size: 12px;
+    }
+
+    /* Doctor Cards in Search */
+    .doc-select-card {
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+    }
+    .doc-select-card.active { border-color: var(--primary); background: var(--primary-light); }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 16px;
+    }
+
+    .modal-box {
+      background: white;
+      width: 100%;
+      max-width: 580px;
+      border-radius: 14px;
+      padding: 24px;
+      max-height: 92vh;
+      overflow-y: auto;
+    }
+
+    .token-slots { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 6px; }
+    .slot-chip {
+      padding: 8px 4px; border: 1px solid var(--border); border-radius: 6px;
+      text-align: center; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff;
+    }
+    .slot-chip.selected { background: var(--primary); color: white; border-color: var(--primary); }
+    .slot-chip.booked { background: #f1f5f9; color: #94a3b8; text-decoration: line-through; cursor: not-allowed; }
+
+    .alert-box { padding: 12px; border-radius: 8px; font-size: 12.5px; margin: 10px 0; line-height: 1.4; }
+    .alert-success { background: var(--green-bg); color: #14532d; border: 1px solid #86efac; }
+    .alert-danger { background: var(--red-bg); color: #7f1d1d; border: 1px solid #fca5a5; }
+
+    .receipt-box { border: 1.5px dashed var(--border); border-radius: 10px; padding: 16px; background: #f8fafc; font-size: 13px; }
+    .receipt-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #e2e8f0; }
+    .receipt-row:last-child { border-bottom: none; }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 1024px) {
+      .core-actions-grid { grid-template-columns: repeat(2, 1fr); }
+      .record-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 820px) {
+      .sidebar { display: none; }
+      .main-wrapper { margin-left: 0; }
+      .dashboard-grid, .profile-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= SIDEBAR (9 FINAL ITEMS) ================= -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon"><i class="fa-solid fa-plus"></i></div>
+      <div class="brand-name">Suhrag<br>Healthtech</div>
+    </div>
+
+    <div class="profile-box">
+      <div class="avatar" id="sidebarAvatar">RK</div>
+      <h4 id="sidebarName">Ramesh Kumar</h4>
+      <p>Patient ID: <strong>P101</strong></p>
+      <div class="status-active">● Verified Patient</div>
+    </div>
+
+    <ul class="nav-menu">
+      <li class="nav-item active" id="nav-dashboard" onclick="switchView('dashboard')">
+        <div class="nav-left"><i class="fa-solid fa-house"></i> Dashboard</div>
+      </li>
+      <li class="nav-item" onclick="openNewConsultModal()">
+        <div class="nav-left"><i class="fa-solid fa-user-plus"></i> New Consultation</div>
+      </li>
+      <li class="nav-item" onclick="openFollowUpModal()">
+        <div class="nav-left"><i class="fa-solid fa-rotate-right"></i> Follow-up Booking</div>
+      </li>
+      <li class="nav-item" id="nav-prescriptions" onclick="switchView('prescriptions')">
+        <div class="nav-left"><i class="fa-solid fa-file-prescription"></i> My Prescriptions</div>
+      </li>
+      <li class="nav-item" id="nav-history" onclick="switchView('history')">
+        <div class="nav-left"><i class="fa-solid fa-clock-rotate-left"></i> My Booking History</div>
+      </li>
+      <li class="nav-item" id="nav-family" onclick="switchView('family')">
+        <div class="nav-left"><i class="fa-solid fa-users"></i> Family Members</div>
+      </li>
+      <li class="nav-item" id="nav-notifications" onclick="switchView('notifications')">
+        <div class="nav-left"><i class="fa-solid fa-bell"></i> Notifications</div>
+        <span class="badge-count" id="notifCountBadge">4</span>
+      </li>
+      <li class="nav-item" id="nav-profile" onclick="switchView('profile')">
+        <div class="nav-left"><i class="fa-solid fa-user-gear"></i> Profile</div>
+      </li>
+      <li class="nav-item" onclick="alert('Logged out safely from Suhrag Healthtech!')">
+        <div class="nav-left"><i class="fa-solid fa-right-from-bracket"></i> Logout</div>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <i class="fa-solid fa-shield-heart" style="font-size: 18px;"></i>
+      <div>Railway-Style ID &<br>OTP Verified OPD</div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN WRAPPER ================= -->
+  <div class="main-wrapper">
+    <header class="topbar">
+      <div class="topbar-title">
+        <h3 id="pageHeaderTitle">Patient Dashboard</h3>
+        <span>Suhrag Healthtech - Smart OPD Queue System</span>
+      </div>
+      <button class="btn-emergency" onclick="alert('EMERGENCY NOTICE (112):\n\nGambhir ya janlewa sthiti me Suhrag queue ka wait na karein. Turant nazdiki Emergency Services / Hospital se sampark karein ya 112 par call karein!')">
+        <i class="fa-solid fa-phone-volume"></i> Emergency (112)
+      </button>
+    </header>
+
+    <main class="content-area">
+      <!-- Hero Banner -->
+      <div class="hero-banner">
+        <div class="hero-text">
+          <h1 id="heroGreeting">Hello, Ramesh Kumar 👋</h1>
+          <p>Patient ID: <strong>P101</strong> • Verified OPD & Prescription Portal</p>
+        </div>
+        <div class="trust-pill">
+          <i class="fa-solid fa-circle-check" style="font-size: 20px; color: #4ade80;"></i>
+          <div>Verified Patient<br>ID: P101</div>
+        </div>
+      </div>
+
+      <!-- 4 CORE ACTION CARDS -->
+      <div class="core-actions-grid">
+        <div class="action-card" onclick="openNewConsultModal()">
+          <div class="action-icon" style="background: #dbeafe; color: var(--primary);">
+            <i class="fa-solid fa-stethoscope"></i>
+          </div>
+          <div>
+            <h4>New Consultation</h4>
+            <p>Doctor Search & Token</p>
+          </div>
+        </div>
+
+        <div class="action-card" onclick="openFollowUpModal()">
+          <div class="action-icon" style="background: #dcfce7; color: var(--green);">
+            <i class="fa-solid fa-file-medical"></i>
+          </div>
+          <div>
+            <h4>Follow-up Booking</h4>
+            <p>Purani Parchi se Booking</p>
+          </div>
+        </div>
+
+        <div class="action-card" onclick="switchView('prescriptions')">
+          <div class="action-icon" style="background: #fef3c7; color: var(--orange);">
+            <i class="fa-solid fa-notes-medical"></i>
+          </div>
+          <div>
+            <h4>My Prescriptions</h4>
+            <p>Digital Records & PDF</p>
+          </div>
+        </div>
+
+        <div class="action-card" onclick="switchView('history')">
+          <div class="action-icon" style="background: #f3e8ff; color: var(--purple);">
+            <i class="fa-solid fa-list-check"></i>
+          </div>
+          <div>
+            <h4>My Booking History</h4>
+            <p>Receipts & All Bookings</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= VIEW 1: DASHBOARD ================= -->
+      <div id="view-dashboard" class="dashboard-grid">
+        <div>
+          <!-- Current Active Token Card -->
+          <div class="card">
+            <div class="section-title">
+              <span>Current Active Token</span>
+              <span id="activeCategoryBadge" class="badge b-in">New Consultation</span>
+            </div>
+            <div class="token-card-split">
+              <div class="token-left">
+                <div class="id-tag" id="mainBookingId">KNE-20261113-00081</div>
+                <div style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Queue Token Number</div>
+                <div class="big-token" id="mainTokenNo">#04</div>
+                <h4 id="mainDocName">Dr. Rahul Kumar <small style="color:var(--text-muted);">(D101)</small></h4>
+                <span style="font-size: 12px; color: var(--text-muted);" id="mainClinicId">Clinic ID: C101 • General Physician</span>
+                <div style="margin-top: 8px;"><span class="badge b-in">● In Consultation</span></div>
+              </div>
+
+              <div class="token-right">
+                <div class="info-row">
+                  <div class="info-icon"><i class="fa-regular fa-calendar"></i></div>
+                  <div>
+                    <small style="color: var(--text-muted); font-size: 11px;">Appointment Date</small><br>
+                    <strong style="font-size: 13.5px;" id="mainApptDate">13 Nov 2026</strong>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <div class="info-icon"><i class="fa-regular fa-clock"></i></div>
+                  <div>
+                    <small style="color: var(--text-muted); font-size: 11px;">Estimated Waiting Time</small><br>
+                    <strong style="font-size: 13.5px;" id="mainWaitTime">~ 15 min (2 Patients Ahead)</strong>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <div class="info-icon"><i class="fa-solid fa-location-dot"></i></div>
+                  <div>
+                    <strong style="font-size: 12.5px;" id="mainClinic">City Health Clinic, Kishanganj (KNE)</strong>
+                  </div>
+                </div>
+                <button class="btn btn-outline btn-sm w-100" id="mainReceiptBtn" onclick="openBookingDetails('KNE-20261113-00081')">
+                  <i class="fa-solid fa-receipt"></i> View Booking Receipt
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Follow-up Eligible Prescriptions -->
+          <div class="card">
+            <div class="section-title">
+              <span>Follow-up Eligible Prescriptions</span>
+              <a style="font-size: 12px; color: var(--primary); cursor: pointer;" onclick="switchView('prescriptions')">View All &rarr;</a>
+            </div>
+            <div id="dashboardRxPreview"></div>
+          </div>
+        </div>
+
+        <!-- Right Column: Live Queue Status -->
+        <div>
+          <div class="card">
+            <div class="section-title">
+              <span><span style="color: var(--green);">●</span> Live Queue Status</span>
+              <span style="font-size: 12px; color: var(--green); font-weight: 700;">● Live</span>
+            </div>
+            <div id="liveQueueList">
+              <div class="queue-item current">
+                <div><strong>#04</strong> &nbsp; Ramesh Kumar (P101)</div>
+                <span class="badge b-in">In Consultation</span>
+              </div>
+              <div class="queue-item">
+                <div><strong>#05</strong> &nbsp; Sita Devi</div>
+                <span class="badge b-waiting">Waiting</span>
+              </div>
+              <div class="queue-item">
+                <div><strong>#06</strong> &nbsp; Manoj Singh</div>
+                <span class="badge b-waiting">Waiting</span>
+              </div>
+              <div class="queue-item">
+                <div><strong>#07</strong> &nbsp; Pooja Sharma</div>
+                <span class="badge b-waiting">Waiting</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= VIEW 2: MY PRESCRIPTIONS ================= -->
+      <div id="view-prescriptions" class="card hidden">
+        <div class="section-title">
+          <span>My Prescriptions</span>
+          <button class="btn btn-outline btn-sm" onclick="switchView('dashboard')">&larr; Back to Dashboard</button>
+        </div>
+        <div id="fullPrescriptionsList"></div>
+      </div>
+
+      <!-- ================= VIEW 3: MY BOOKING HISTORY ================= -->
+      <div id="view-history" class="card hidden">
+        <div class="section-title">
+          <span>My Booking History (Filter by Family Member)</span>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <select id="historyPatientFilter" onchange="renderBookingHistory()" style="padding:6px 10px; border-radius:6px; border:1px solid var(--border); font-size:12px;">
+              <option value="ALL">All Family Members</option>
+            </select>
+            <button class="btn btn-outline btn-sm" onclick="switchView('dashboard')">&larr; Back</button>
+          </div>
+        </div>
+        <div id="bookingHistoryList"></div>
+      </div>
+
+      <!-- ================= VIEW 4: FAMILY MEMBERS ================= -->
+      <div id="view-family" class="card hidden">
+        <div class="section-title">
+          <span>Family Members (Separate Patient IDs & History)</span>
+          <button class="btn btn-outline btn-sm" onclick="switchView('dashboard')">&larr; Back to Dashboard</button>
+        </div>
+        <div id="familyMembersList" style="margin-bottom: 18px;"></div>
+
+        <div style="border-top: 1px solid var(--border); padding-top: 16px;">
+          <h4 style="font-size: 14px; margin-bottom: 12px;">+ Add Family Member</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full Name *</label>
+              <input type="text" id="newFamName" placeholder="e.g. Sunita Devi">
+            </div>
+            <div class="form-group">
+              <label>Relationship *</label>
+              <select id="newFamRelation">
+                <option value="Mother">Mother</option>
+                <option value="Father">Father</option>
+                <option value="Spouse">Spouse</option>
+                <option value="Child">Child</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Date of Birth / Age *</label>
+              <input type="date" id="newFamDob">
+            </div>
+            <div class="form-group">
+              <label>Gender (Optional)</label>
+              <select id="newFamGender">
+                <option value="Female">Female</option>
+                <option value="Male">Male</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Mobile Number (Optional)</label>
+            <input type="tel" id="newFamPhone" placeholder="10-digit mobile number">
+          </div>
+          <button class="btn btn-primary" onclick="addFamilyMember()">Create Family Member & Generate Patient ID</button>
+        </div>
+      </div>
+
+      <!-- ================= VIEW 5: NOTIFICATIONS ================= -->
+      <div id="view-notifications" class="card hidden">
+        <div class="section-title">
+          <span>Notifications & Live Alerts</span>
+          <button class="btn btn-outline btn-sm" onclick="switchView('dashboard')">&larr; Back to Dashboard</button>
+        </div>
+        <div id="notificationsListContainer"></div>
+      </div>
+
+      <!-- ================= VIEW 6: MY PROFILE (WITH OTP VERIFICATION) ================= -->
+      <div id="view-profile" class="hidden">
+        <div class="profile-layout">
+          <!-- Left Card: Photo & Password -->
+          <div class="card" style="text-align: center;">
+            <div class="avatar" style="width: 84px; height: 84px; font-size: 30px; margin-bottom: 10px;" id="profileBigAvatar">RK</div>
+            <h3 id="profileCardName">Ramesh Kumar</h3>
+            <p style="font-size: 12.5px; color: var(--text-muted); margin: 4px 0 8px;">Permanent Patient ID: <strong style="color: var(--primary);">P101</strong></p>
+            <span class="badge b-in">● Verified Account</span>
+
+            <div style="margin-top: 16px; text-align: left;">
+              <label style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 5px;">Profile Photo</label>
+              <input type="file" accept="image/*" style="font-size: 12px;" onchange="previewProfilePhoto(event)">
+            </div>
+
+            <!-- Change Password with Confirm New Password -->
+            <div style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 16px; text-align: left;">
+              <h4 style="font-size: 13.5px; margin-bottom: 10px;"><i class="fa-solid fa-lock"></i> Change Password</h4>
+              <div class="form-group">
+                <label>Current Password</label>
+                <input type="password" id="oldPass" placeholder="Enter current password">
+              </div>
+              <div class="form-group">
+                <label>New Password</label>
+                <input type="password" id="newPass" placeholder="Min 6 characters">
+              </div>
+              <div class="form-group">
+                <label>Confirm New Password</label>
+                <input type="password" id="confirmNewPass" placeholder="Re-enter new password">
+              </div>
+              <button class="btn btn-outline btn-sm w-100" onclick="changePassword()">Update Password</button>
+            </div>
+          </div>
+
+          <!-- Right Card: Personal Details + OTP Verification -->
+          <div class="card">
+            <div class="section-title">
+              <span>Personal Information</span>
+              <button class="btn btn-outline btn-sm" onclick="switchView('dashboard')">&larr; Back</button>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Patient ID (Permanent)</label>
+                <input type="text" value="P101" disabled>
+              </div>
+              <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="profNameInput" value="Ramesh Kumar">
+              </div>
+            </div>
+
+            <!-- Mobile Number with OTP Verification -->
+            <div class="form-group">
+              <label>Mobile Number <span id="phoneVerifiedBadge" class="badge b-in" style="margin-left:6px;">✓ Verified</span></label>
+              <div class="input-with-btn">
+                <input type="tel" id="profPhoneInput" value="9876543210" oninput="onPhoneChange()">
+                <button type="button" class="btn btn-outline btn-sm hidden" id="sendPhoneOtpBtn" onclick="sendOtp('phone')">Send OTP</button>
+              </div>
+              <div id="phoneOtpBox" class="otp-panel hidden">
+                <strong>Verify New Mobile Number:</strong> Enter 4-digit OTP sent to new number (Demo OTP: <strong>1234</strong>)
+                <div class="input-with-btn" style="margin-top:6px;">
+                  <input type="text" id="phoneOtpCode" maxlength="4" placeholder="Enter 1234">
+                  <button type="button" class="btn btn-success btn-sm" onclick="verifyOtp('phone')">Verify OTP</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Email ID with OTP Verification -->
+            <div class="form-group">
+              <label>Email ID <span id="emailVerifiedBadge" class="badge b-in" style="margin-left:6px;">✓ Verified</span></label>
+              <div class="input-with-btn">
+                <input type="email" id="profEmailInput" value="ramesh.kumar@example.com" oninput="onEmailChange()">
+                <button type="button" class="btn btn-outline btn-sm hidden" id="sendEmailOtpBtn" onclick="sendOtp('email')">Send OTP</button>
+              </div>
+              <div id="emailOtpBox" class="otp-panel hidden">
+                <strong>Verify New Email ID:</strong> Enter 4-digit OTP sent to new email (Demo OTP: <strong>5678</strong>)
+                <div class="input-with-btn" style="margin-top:6px;">
+                  <input type="text" id="emailOtpCode" maxlength="4" placeholder="Enter 5678">
+                  <button type="button" class="btn btn-success btn-sm" onclick="verifyOtp('email')">Verify OTP</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Date of Birth & Auto Calculated Age -->
+            <div class="form-row">
+              <div class="form-group">
+                <label>Date of Birth</label>
+                <input type="date" id="profDobInput" value="1998-05-14" onchange="calculateAutoAge()">
+              </div>
+              <div class="form-group">
+                <label>Automatically Calculated Age</label>
+                <input type="text" id="profAgeDisplay" value="28 Years" disabled>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>State</label>
+                <select id="profStateInput">
+                  <option value="Bihar" selected>Bihar</option>
+                  <option value="Jharkhand">Jharkhand</option>
+                  <option value="West Bengal">West Bengal</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>District</label>
+                <input type="text" id="profDistrictInput" value="Kishanganj">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Village / Town / Locality</label>
+              <input type="text" id="profVillageInput" value="Alta Hatt, Kishanganj">
+            </div>
+
+            <button class="btn btn-primary" onclick="saveProfileChanges()">Save Personal Information</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ================= MODAL 1: NEW CONSULTATION BOOKING ================= -->
+  <div class="modal-overlay" id="newConsultModal">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <h3 style="color: var(--primary);"><i class="fa-solid fa-stethoscope"></i> New Consultation Booking</h3>
+        <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 18px;" onclick="closeModals()"></i>
+      </div>
+
+      <!-- 1 & 2: State & District -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>1. State</label>
+          <select id="ncState"><option value="Bihar">Bihar</option></select>
+        </div>
+        <div class="form-group">
+          <label>2. District (Location Code)</label>
+          <select id="ncDistrict" onchange="filterNewDoctors()">
+            <option value="Kishanganj">Kishanganj (KNE)</option>
+            <option value="Chhapra">Chhapra (CPR)</option>
+            <option value="Patna">Patna (PNBE)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 4: Doctor Search -->
+      <div class="form-group">
+        <label>3. Search Doctor by Name or Specialization</label>
+        <input type="text" id="ncDocSearch" placeholder="Type doctor name or specialty..." onkeyup="filterNewDoctors()">
+      </div>
+
+      <!-- 3, 5, 6: Doctor List, Profile & Clinic Details -->
+      <div class="form-group">
+        <label>4. Select Doctor & Clinic</label>
+        <div id="ncDoctorCardsList"></div>
+      </div>
+
+      <!-- 7 & 9: Appointment Date & Patient Selection -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>5. Appointment Date (Max 4 Days)</label>
+          <input type="date" id="ncDate">
+        </div>
+        <div class="form-group">
+          <label>6. Select Patient (Self / Family)</label>
+          <select id="ncPatientSelect"></select>
+        </div>
+      </div>
+
+      <!-- 8: Available Token/Slot -->
+      <div class="form-group">
+        <label>7. Select Available Queue Token</label>
+        <div class="token-slots" id="ncTokenSlots"></div>
+      </div>
+
+      <!-- 10 & 11: Consultation Fee & Payment -->
+      <div style="background: #f8fafc; padding: 11px; border-radius: 8px; border: 1px solid var(--border); margin: 12px 0; font-size: 13px;">
+        <div style="display:flex; justify-content:space-between;">
+          <span>Consultation Fee:</span>
+          <strong id="ncFeeDisplay" style="color: var(--primary); font-size: 15px;">₹400</strong>
+        </div>
+        <small style="color: var(--text-muted);" id="ncBookingPreviewHint">Booking ID Format: KNE-20261113-XXXXX</small>
+      </div>
+
+      <button class="btn btn-primary w-100" onclick="confirmNewConsultation()">
+        <i class="fa-solid fa-credit-card"></i> Pay & Confirm Booking
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 2: FOLLOW-UP BOOKING ================= -->
+  <div class="modal-overlay" id="followUpModal">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <h3 style="color: var(--green);"><i class="fa-solid fa-file-medical"></i> Follow-up Booking</h3>
+        <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 18px;" onclick="closeModals()"></i>
+      </div>
+
+      <!-- 1 & 2: Previous Doctor & Previous Prescription Select -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>1. Select Previous Doctor</label>
+          <select id="fuDoctorSelect" onchange="populateDoctorPrescriptions()">
+            <option value="D101">Dr. Rahul Kumar (D101)</option>
+            <option value="D102">Dr. Anjali Verma (D102)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>2. Select Previous Prescription</label>
+          <select id="fuPrescriptionSelect" onchange="syncRxInput()"></select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>3. Prescription ID (Verify)</label>
+        <div class="input-with-btn">
+          <input type="text" id="fuRxInput" placeholder="e.g. RX-2026-00501" style="text-transform: uppercase;">
+          <button type="button" class="btn btn-primary btn-sm" onclick="verifyPrescriptionRecord()">Verify Validity</button>
+        </div>
+      </div>
+
+      <!-- 4 & 5: Consultation Date & Validity Check Result -->
+      <div id="fuValidationResult"></div>
+
+      <!-- 6, 7, 8, 9, 10: Booking Step 2 -->
+      <div id="fuBookingStep2" class="hidden" style="border-top: 1px solid var(--border); padding-top: 12px; margin-top: 10px;">
+        <div class="form-group">
+          <label>4. Select Available Date (Within Validity)</label>
+          <input type="date" id="fuDateInput">
+        </div>
+
+        <div class="form-group">
+          <label>5. Select Available Queue Token</label>
+          <div class="token-slots" id="fuTokenSlots"></div>
+        </div>
+
+        <div style="background: var(--green-bg); padding: 10px; border-radius: 8px; margin: 12px 0; font-size: 13px; color: #14532d;">
+          Follow-up Fee: <strong id="fuFeeDisplay" style="font-size: 15px;">₹150</strong>
+        </div>
+
+        <button class="btn btn-success w-100" onclick="confirmFollowUpBooking()">
+          <i class="fa-solid fa-check-circle"></i> Pay & Confirm Follow-up
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 3: BOOKING DETAILS & RECEIPT ================= -->
+  <div class="modal-overlay" id="bookingDetailsModal">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <h3 style="color: var(--primary);"><i class="fa-solid fa-receipt"></i> Booking Details & Receipt</h3>
+        <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 18px;" onclick="closeModals()"></i>
+      </div>
+      <div id="bookingDetailsContent"></div>
+      <button class="btn btn-primary w-100" style="margin-top: 14px;" onclick="window.print()">
+        <i class="fa-solid fa-download"></i> Download / Print Receipt
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 4: VIEW PRESCRIPTION ================= -->
+  <div class="modal-overlay" id="rxDetailsModal">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <h3 style="color: var(--primary);"><i class="fa-solid fa-file-prescription"></i> Digital Prescription</h3>
+        <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 18px;" onclick="closeModals()"></i>
+      </div>
+      <div id="rxDetailsContent"></div>
+      <button class="btn btn-success w-100" style="margin-top: 14px;" onclick="alert('Downloading Prescription PDF...')">
+        <i class="fa-solid fa-download"></i> Download Prescription PDF
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // ================= CONSTANTS & LOCATION CODES =================
+    const CURRENT_DATE = "2026-11-13";
+    const locationCodes = {
+      "Kishanganj": "KNE",
+      "Chhapra": "CPR",
+      "Patna": "PNBE"
+    };
+
+    function formatDisplayDate(isoDate) {
+      if (!isoDate) return "";
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const p = isoDate.split("-");
+      return `${parseInt(p[2], 10)} ${months[parseInt(p[1], 10) - 1]} ${p[0]}`;
+    }
+
+    // Railway-Style Unique Booking ID Generator: LOC-YYYYMMDD-XXXXX
+    let bookingCounter = 81;
+    function generateBookingId(district, isoDate) {
+      bookingCounter++;
+      const locCode = locationCodes[district] || "SHG";
+      const dateCompact = isoDate.replace(/-/g, ""); // 20261113
+      const seq = String(bookingCounter).padStart(5, "0");
+      return `${locCode}-${dateCompact}-${seq}`;
+    }
+
+    // ================= MOCK DATABASE =================
+    let savedPhone = "9876543210";
+    let savedEmail = "ramesh.kumar@example.com";
+    let isPhoneVerified = true;
+    let isEmailVerified = true;
+
+    const doctorsDB = [
+      { doctorId: "D101", clinicId: "C101", name: "Dr. Rahul Kumar", qual: "MBBS, MD", spec: "General Physician", exp: "10 Yrs", district: "Kishanganj", clinicName: "City Health Clinic, Kishanganj", newFee: 400, followUpFee: 150, validityDays: 25 },
+      { doctorId: "D102", clinicId: "C102", name: "Dr. Anjali Verma", qual: "MBBS, DCH", spec: "Pediatrician", exp: "7 Yrs", district: "Kishanganj", clinicName: "Care & Cure Clinic, Kishanganj", newFee: 350, followUpFee: 100, validityDays: 15 },
+      { doctorId: "D103", clinicId: "C201", name: "Dr. S. K. Tiwary", qual: "MBBS, MS", spec: "Orthopedic", exp: "12 Yrs", district: "Chhapra", clinicName: "Saran Ortho Center, Chhapra", newFee: 500, followUpFee: 200, validityDays: 25 },
+      { doctorId: "D104", clinicId: "C301", name: "Dr. R. N. Jha", qual: "MBBS, DM", spec: "Cardiologist", exp: "15 Yrs", district: "Patna", clinicName: "Patliputra Heart Care, Patna", newFee: 600, followUpFee: 250, validityDays: 30 }
+    ];
+
+    let familyMembers = [
+      { patientId: "P101", name: "Ramesh Kumar", relation: "Self", dob: "1998-05-14", age: 28, gender: "Male", phone: "9876543210" },
+      { patientId: "P102", name: "Sita Devi", relation: "Mother", dob: "1972-03-10", age: 54, gender: "Female", phone: "9876543211" }
+    ];
+
+    let prescriptionsDB = [
+      {
+        prescriptionId: "RX-2026-00501",
+        bookingId: "KNE-20261101-00042",
+        patientId: "P101",
+        patientName: "Ramesh Kumar",
+        doctorId: "D101",
+        doctorName: "Dr. Rahul Kumar",
+        clinicId: "C101",
+        clinicName: "City Health Clinic, Kishanganj",
+        visitDate: "2026-11-01",
+        validityDays: 25,
+        validTill: "2026-11-26",
+        followUpFee: 150,
+        diagnosis: "Seasonal Fever & Weakness",
+        medicines: "1. Tab. Paracetamol 650mg SOS\n2. Cap. Multivitamin (1-0-0)",
+        instructions: "25 din ke andar follow-up valid hai (26 Nov 2026 tak).",
+        followUpUsed: false
+      },
+      {
+        prescriptionId: "RX-2026-00410",
+        bookingId: "KNE-20261010-00015",
+        patientId: "P101",
+        patientName: "Ramesh Kumar",
+        doctorId: "D101",
+        doctorName: "Dr. Rahul Kumar",
+        clinicId: "C101",
+        clinicName: "City Health Clinic, Kishanganj",
+        visitDate: "2026-10-10",
+        validityDays: 25,
+        validTill: "2026-11-04",
+        followUpFee: 150,
+        diagnosis: "Gastritis",
+        medicines: "1. Tab. Pan-D (1-0-0)",
+        instructions: "Follow-up validity expired.",
+        followUpUsed: false
+      }
+    ];
+
+    let bookingsHistory = [
+      {
+        bookingId: "KNE-20261113-00081",
+        patientId: "P101",
+        patientName: "Ramesh Kumar",
+        doctorId: "D101",
+        doctorName: "Dr. Rahul Kumar",
+        clinicId: "C101",
+        clinicName: "City Health Clinic, Kishanganj",
+        locationCode: "KNE",
+        bookingType: "New",
+        bookingDate: "2026-11-13",
+        tokenNumber: 4,
+        fee: 400,
+        paymentStatus: "Paid",
+        bookingStatus: "In Consultation",
+        prescriptionId: null
+      },
+      {
+        bookingId: "KNE-20261101-00042",
+        patientId: "P101",
+        patientName: "Ramesh Kumar",
+        doctorId: "D101",
+        doctorName: "Dr. Rahul Kumar",
+        clinicId: "C101",
+        clinicName: "City Health Clinic, Kishanganj",
+        locationCode: "KNE",
+        bookingType: "New",
+        bookingDate: "2026-11-01",
+        tokenNumber: 9,
+        fee: 400,
+        paymentStatus: "Paid",
+        bookingStatus: "Completed",
+        prescriptionId: "RX-2026-00501"
+      },
+      {
+        bookingId: "KNE-20261105-00055",
+        patientId: "P102",
+        patientName: "Sita Devi",
+        doctorId: "D102",
+        doctorName: "Dr. Anjali Verma",
+        clinicId: "C102",
+        clinicName: "Care & Cure Clinic, Kishanganj",
+        locationCode: "KNE",
+        bookingType: "New",
+        bookingDate: "2026-11-05",
+        tokenNumber: 3,
+        fee: 350,
+        paymentStatus: "Paid",
+        bookingStatus: "Completed",
+        prescriptionId: null
+      }
+    ];
+
+    let notificationsDB = [
+      { title: "Booking Confirmed", desc: "Booking ID KNE-20261113-00081 confirmed for Dr. Rahul Kumar.", time: "13 Nov 2026, 09:00 AM" },
+      { title: "Payment Successful", desc: "₹400 paid via UPI for Token #04.", time: "13 Nov 2026, 09:00 AM" },
+      { title: "Your Turn Is Near", desc: "Only 2 patients ahead of Token #04 at City Health Clinic.", time: "13 Nov 2026, 09:25 AM" },
+      { title: "Follow-up Expiry Reminder", desc: "Prescription RX-2026-00501 is valid until 26 Nov 2026.", time: "12 Nov 2026, 06:00 PM" }
+    ];
+
+    let selectedDoctorObj = doctorsDB[0];
+    let selectedNewToken = null;
+    let selectedFollowUpToken = null;
+    let verifiedPrescription = null;
+
+    // ================= VIEW SWITCHER =================
+    const viewTitles = {
+      dashboard: "Patient Dashboard",
+      prescriptions: "My Prescriptions",
+      history: "My Booking History",
+      family: "Family Members",
+      notifications: "Notifications",
+      profile: "My Profile & Verification"
+    };
+
+    function switchView(viewName) {
+      Object.keys(viewTitles).forEach(v => {
+        document.getElementById(`view-${v}`).classList.add('hidden');
+        const nav = document.getElementById(`nav-${v}`);
+        if (nav) nav.classList.remove('active');
+      });
+
+      document.getElementById(`view-${viewName}`).classList.remove('hidden');
+      const activeNav = document.getElementById(`nav-${viewName}`);
+      if (activeNav) activeNav.classList.add('active');
+      document.getElementById('pageHeaderTitle').innerText = viewTitles[viewName];
+
+      if (viewName === 'prescriptions') renderPrescriptions();
+      if (viewName === 'history') {
+        populateHistoryFilter();
+        renderBookingHistory();
+      }
+      if (viewName === 'family') renderFamilyMembers();
+      if (viewName === 'notifications') renderNotifications();
+    }
+
+    // ================= PROFILE: OTP VERIFICATION & AUTO AGE =================
+    function onPhoneChange() {
+      const val = document.getElementById('profPhoneInput').value.trim();
+      const badge = document.getElementById('phoneVerifiedBadge');
+      const btn = document.getElementById('sendPhoneOtpBtn');
+      const otpBox = document.getElementById('phoneOtpBox');
+
+      if (val === savedPhone) {
+        isPhoneVerified = true;
+        badge.className = "badge b-in";
+        badge.innerText = "✓ Verified";
+        btn.classList.add('hidden');
+        otpBox.classList.add('hidden');
+      } else {
+        isPhoneVerified = false;
+        badge.className = "badge b-waiting";
+        badge.innerText = "Unverified";
+        btn.classList.remove('hidden');
+      }
+    }
+
+    function onEmailChange() {
+      const val = document.getElementById('profEmailInput').value.trim();
+      const badge = document.getElementById('emailVerifiedBadge');
+      const btn = document.getElementById('sendEmailOtpBtn');
+      const otpBox = document.getElementById('emailOtpBox');
+
+      if (val === savedEmail) {
+        isEmailVerified = true;
+        badge.className = "badge b-in";
+        badge.innerText = "✓ Verified";
+        btn.classList.add('hidden');
+        otpBox.classList.add('hidden');
+      } else {
+        isEmailVerified = false;
+        badge.className = "badge b-waiting";
+        badge.innerText = "Unverified";
+        btn.classList.remove('hidden');
+      }
+    }
+
+    function sendOtp(type) {
+      if (type === 'phone') {
+        const phone = document.getElementById('profPhoneInput').value.trim();
+        if (!/^\d{10}$/.test(phone)) return alert("Kripya 10-digit valid mobile number dalein.");
+        document.getElementById('phoneOtpBox').classList.remove('hidden');
+        alert(`OTP sent to new mobile number ${phone}. (Use Demo OTP: 1234)`);
+      } else {
+        const email = document.getElementById('profEmailInput').value.trim();
+        if (!email.includes('@')) return alert("Kripya valid Email ID dalein.");
+        document.getElementById('emailOtpBox').classList.remove('hidden');
+        alert(`OTP sent to new email ${email}. (Use Demo OTP: 5678)`);
+      }
+    }
+
+    function verifyOtp(type) {
+      if (type === 'phone') {
+        const code = document.getElementById('phoneOtpCode').value.trim();
+        if (code === "1234") {
+          savedPhone = document.getElementById('profPhoneInput').value.trim();
+          isPhoneVerified = true;
+          onPhoneChange();
+          alert("New Mobile Number verified and linked!");
+        } else {
+          alert("Invalid OTP! Demo OTP 1234 dalein.");
+        }
+      } else {
+        const code = document.getElementById('emailOtpCode').value.trim();
+        if (code === "5678") {
+          savedEmail = document.getElementById('profEmailInput').value.trim();
+          isEmailVerified = true;
+          onEmailChange();
+          alert("New Email ID verified and linked!");
+        } else {
+          alert("Invalid OTP! Demo OTP 5678 dalein.");
+        }
+      }
+    }
+
+    function calculateAutoAge() {
+      const dobVal = document.getElementById('profDobInput').value;
+      if (!dobVal) return;
+      const birth = new Date(dobVal);
+      const ref = new Date(CURRENT_DATE);
+      let age = ref.getFullYear() - birth.getFullYear();
+      const m = ref.getMonth() - birth.getMonth();
+      if (m < 0 || (m === 0 && ref.getDate() < birth.getDate())) age--;
+      document.getElementById('profAgeDisplay').value = `${age} Years`;
+      familyMembers[0].age = age;
+      familyMembers[0].dob = dobVal;
+    }
+
+    function previewProfilePhoto(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('sidebarAvatar').innerHTML = `<img src="${e.target.result}">`;
+        document.getElementById('profileBigAvatar').innerHTML = `<img src="${e.target.result}">`;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveProfileChanges() {
+      if (!isPhoneVerified) {
+        alert("Mobile number badalne ke liye pehle naye number par OTP verify karein!");
+        return;
+      }
+      if (!isEmailVerified) {
+        alert("Email ID badalne ke liye pehle naye email par OTP verify karein!");
+        return;
+      }
+
+      const newName = document.getElementById('profNameInput').value.trim();
+      if (newName) {
+        document.getElementById('sidebarName').innerText = newName;
+        document.getElementById('profileCardName').innerText = newName;
+        document.getElementById('heroGreeting').innerText = `Hello, ${newName} 👋`;
+        familyMembers[0].name = newName;
+        familyMembers[0].phone = savedPhone;
+        alert("Personal information saved successfully!");
+      }
+    }
+
+    function changePassword() {
+      const oldP = document.getElementById('oldPass').value;
+      const newP = document.getElementById('newPass').value;
+      const confP = document.getElementById('confirmNewPass').value;
+
+      if (!oldP || newP.length < 6) return alert("Current password aur min 6-character new password dalein.");
+      if (newP !== confP) return alert("New Password aur Confirm New Password match nahi kar rahe hain!");
+
+      document.getElementById('oldPass').value = '';
+      document.getElementById('newPass').value = '';
+      document.getElementById('confirmNewPass').value = '';
+      alert("Password updated successfully!");
+    }
+
+    // ================= NEW CONSULTATION BOOKING =================
+    function openNewConsultModal() {
+      document.getElementById('newConsultModal').style.display = 'flex';
+      const dateInput = document.getElementById('ncDate');
+      dateInput.min = CURRENT_DATE;
+      dateInput.max = "2026-11-17";
+      dateInput.value = CURRENT_DATE;
+
+      const patSel = document.getElementById('ncPatientSelect');
+      patSel.innerHTML = '';
+      familyMembers.forEach(m => {
+        patSel.innerHTML += `<option value="${m.patientId}">${m.name} (${m.patientId} • ${m.relation})</option>`;
+      });
+
+      filterNewDoctors();
+      renderTokenChips('ncTokenSlots', 'new');
+    }
+
+    function filterNewDoctors() {
+      const dist = document.getElementById('ncDistrict').value;
+      const query = document.getElementById('ncDocSearch').value.toLowerCase();
+      const container = document.getElementById('ncDoctorCardsList');
+      container.innerHTML = '';
+
+      const filtered = doctorsDB.filter(d => 
+        d.district === dist && 
+        (d.name.toLowerCase().includes(query) || d.spec.toLowerCase().includes(query))
+      );
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<p style="font-size:12px; color:var(--text-muted);">No doctors found for this search.</p>`;
+        return;
+      }
+
+      filtered.forEach((doc, idx) => {
+        if (idx === 0) selectedDoctorObj = doc;
+        const card = document.createElement('div');
+        card.className = `doc-select-card ${idx === 0 ? 'active' : ''}`;
+        card.innerHTML = `
+          <div>
+            <strong>${doc.name}</strong> <span class="id-tag">${doc.doctorId}</span><br>
+            <small style="color:var(--text-muted);">${doc.qual} • ${doc.spec} (${doc.exp})</small><br>
+            <small style="color:var(--primary); font-weight:600;">${doc.clinicName} (${doc.clinicId})</small>
+          </div>
+          <div style="text-align:right;">
+            <strong>₹${doc.newFee}</strong><br>
+            <small style="font-size:11px; color:var(--green);">${doc.validityDays}d Validity</small>
+          </div>
+        `;
+        card.onclick = () => {
+          container.querySelectorAll('.doc-select-card').forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+          selectedDoctorObj = doc;
+          updateNewFeePreview();
+        };
+        container.appendChild(card);
+      });
+      updateNewFeePreview();
+    }
+
+    function updateNewFeePreview() {
+      if (!selectedDoctorObj) return;
+      const code = locationCodes[selectedDoctorObj.district] || "SHG";
+      document.getElementById('ncFeeDisplay').innerText = `₹${selectedDoctorObj.newFee}`;
+      document.getElementById('ncBookingPreviewHint').innerText = `Unique Booking ID Format: ${code}-20261113-XXXXX`;
+    }
+
+    function renderTokenChips(containerId, mode) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      const booked = [1, 2, 3, 4, 6];
+      selectedNewToken = null;
+      selectedFollowUpToken = null;
+
+      for (let i = 1; i <= 10; i++) {
+        const label = i < 10 ? `#0${i}` : `#${i}`;
+        const chip = document.createElement('div');
+        chip.className = 'slot-chip';
+        chip.innerText = label;
+
+        if (booked.includes(i)) {
+          chip.classList.add('booked');
+        } else {
+          chip.onclick = () => {
+            container.querySelectorAll('.slot-chip').forEach(c => c.classList.remove('selected'));
+            chip.classList.add('selected');
+            if (mode === 'new') selectedNewToken = i;
+            else selectedFollowUpToken = i;
+          };
+        }
+        container.appendChild(chip);
+      }
+    }
+
+    function confirmNewConsultation() {
+      if (!selectedDoctorObj || !selectedNewToken) {
+        alert("Kripya doctor aur available token chunein!");
+        return;
+      }
+      const date = document.getElementById('ncDate').value;
+      const patId = document.getElementById('ncPatientSelect').value;
+      const patObj = familyMembers.find(m => m.patientId === patId);
+      const bId = generateBookingId(selectedDoctorObj.district, date);
+
+      const newRec = {
+        bookingId: bId,
+        patientId: patObj.patientId,
+        patientName: patObj.name,
+        doctorId: selectedDoctorObj.doctorId,
+        doctorName: selectedDoctorObj.name,
+        clinicId: selectedDoctorObj.clinicId,
+        clinicName: selectedDoctorObj.clinicName,
+        locationCode: locationCodes[selectedDoctorObj.district],
+        bookingType: "New",
+        bookingDate: date,
+        tokenNumber: selectedNewToken,
+        fee: selectedDoctorObj.newFee,
+        paymentStatus: "Paid",
+        bookingStatus: "Confirmed",
+        prescriptionId: null
+      };
+
+      bookingsHistory.unshift(newRec);
+      notificationsDB.unshift({
+        title: "Booking Confirmed & Token Generated",
+        desc: `Booking ID ${bId} • Token #0${selectedNewToken} for ${patObj.name}.`,
+        time: `${formatDisplayDate(CURRENT_DATE)}, Just Now`
+      });
+      document.getElementById('notifCountBadge').innerText = notificationsDB.length;
+
+      updateActiveCard(newRec);
+      closeModals();
+      alert(`Booking Confirmed!\nBooking ID: ${bId}\nPatient: ${patObj.name} (${patObj.patientId})\nToken: #0${selectedNewToken}`);
+    }
+
+    // ================= FOLLOW-UP BOOKING =================
+    function openFollowUpModal() {
+      document.getElementById('followUpModal').style.display = 'flex';
+      document.getElementById('fuValidationResult').innerHTML = '';
+      document.getElementById('fuBookingStep2').classList.add('hidden');
+      populateDoctorPrescriptions();
+    }
+
+    function populateDoctorPrescriptions() {
+      const docId = document.getElementById('fuDoctorSelect').value;
+      const sel = document.getElementById('fuPrescriptionSelect');
+      sel.innerHTML = '';
+
+      const matches = prescriptionsDB.filter(p => p.doctorId === docId);
+      if (matches.length === 0) {
+        sel.innerHTML = `<option value="">No previous prescriptions found</option>`;
+        document.getElementById('fuRxInput').value = '';
+        return;
+      }
+      matches.forEach(p => {
+        sel.innerHTML += `<option value="${p.prescriptionId}">${p.prescriptionId} (${formatDisplayDate(p.visitDate)})</option>`;
+      });
+      syncRxInput();
+    }
+
+    function syncRxInput() {
+      document.getElementById('fuRxInput').value = document.getElementById('fuPrescriptionSelect').value;
+    }
+
+    function verifyPrescriptionRecord() {
+      const docId = document.getElementById('fuDoctorSelect').value;
+      const rxId = document.getElementById('fuRxInput').value.trim().toUpperCase();
+      const resDiv = document.getElementById('fuValidationResult');
+      const step2 = document.getElementById('fuBookingStep2');
+      step2.classList.add('hidden');
+
+      const rx = prescriptionsDB.find(r => r.prescriptionId === rxId && r.doctorId === docId);
+      if (!rx) {
+        resDiv.innerHTML = `<div class="alert-box alert-danger"><strong>Invalid Prescription ID!</strong> Record not found for selected doctor.</div>`;
+        return;
+      }
+      if (rx.followUpUsed) {
+        resDiv.innerHTML = `<div class="alert-box alert-danger"><strong>Already Used!</strong> Follow-up already booked on ${rx.prescriptionId}.</div>`;
+        return;
+      }
+      if (CURRENT_DATE > rx.validTill) {
+        resDiv.innerHTML = `<div class="alert-box alert-danger"><strong>Follow-up Validity Expired!</strong><br>Consultation Date: ${formatDisplayDate(rx.visitDate)} | Valid Until: ${formatDisplayDate(rx.validTill)}.<br>Kripya <strong>New Consultation</strong> book karein.</div>`;
+        return;
+      }
+
+      verifiedPrescription = rx;
+      resDiv.innerHTML = `<div class="alert-box alert-success"><strong>✓ Follow-up Eligible</strong><br>Consultation Date: <strong>${formatDisplayDate(rx.visitDate)}</strong> | Valid Until: <strong>${formatDisplayDate(rx.validTill)}</strong> (${rx.validityDays} Days Policy)</div>`;
+
+      const dateInput = document.getElementById('fuDateInput');
+      dateInput.min = CURRENT_DATE;
+      dateInput.max = rx.validTill;
+      dateInput.value = CURRENT_DATE;
+
+      document.getElementById('fuFeeDisplay').innerText = `₹${rx.followUpFee}`;
+      renderTokenChips('fuTokenSlots', 'followup');
+      step2.classList.remove('hidden');
+    }
+
+    function confirmFollowUpBooking() {
+      if (!verifiedPrescription || !selectedFollowUpToken) return alert("Kripya token chunein!");
+      const date = document.getElementById('fuDateInput').value;
+      const doc = doctorsDB.find(d => d.doctorId === verifiedPrescription.doctorId);
+      const bId = generateBookingId(doc.district, date);
+
+      verifiedPrescription.followUpUsed = true;
+
+      const fuRec = {
+        bookingId: bId,
+        patientId: verifiedPrescription.patientId,
+        patientName: verifiedPrescription.patientName,
+        doctorId: doc.doctorId,
+        doctorName: doc.name,
+        clinicId: doc.clinicId,
+        clinicName: doc.clinicName,
+        locationCode: locationCodes[doc.district],
+        bookingType: "Follow-up",
+        bookingDate: date,
+        tokenNumber: selectedFollowUpToken,
+        fee: verifiedPrescription.followUpFee,
+        paymentStatus: "Paid",
+        bookingStatus: "Confirmed",
+        prescriptionId: verifiedPrescription.prescriptionId
+      };
+
+      bookingsHistory.unshift(fuRec);
+      updateActiveCard(fuRec);
+      renderPrescriptions();
+      closeModals();
+      alert(`Follow-up Booking Confirmed!\nUnique Booking ID: ${bId}\nQueue Token: #0${selectedFollowUpToken}`);
+    }
+
+    function updateActiveCard(rec) {
+      const tokenStr = rec.tokenNumber < 10 ? `#0${rec.tokenNumber}` : `#${rec.tokenNumber}`;
+      document.getElementById('mainBookingId').innerText = rec.bookingId;
+      document.getElementById('mainTokenNo').innerText = tokenStr;
+      document.getElementById('mainDocName').innerHTML = `${rec.doctorName} <small style="color:var(--text-muted);">(${rec.doctorId})</small>`;
+      document.getElementById('mainClinicId').innerText = `Clinic ID: ${rec.clinicId} • ${rec.bookingType}`;
+      document.getElementById('mainClinic').innerText = `${rec.clinicName} (${rec.locationCode})`;
+      document.getElementById('mainApptDate').innerText = formatDisplayDate(rec.bookingDate);
+      document.getElementById('activeCategoryBadge').innerText = `${rec.bookingType} Consultation`;
+      document.getElementById('mainReceiptBtn').setAttribute('onclick', `openBookingDetails('${rec.bookingId}')`);
+
+      document.getElementById('liveQueueList').innerHTML += `
+        <div class="queue-item current">
+          <div><strong>${tokenStr}</strong> &nbsp; ${rec.patientName} (${rec.patientId})</div>
+          <span class="badge b-confirmed">${rec.bookingStatus}</span>
+        </div>
+      `;
+    }
+
+    // ================= RENDER BOOKING HISTORY & RECEIPT =================
+    function populateHistoryFilter() {
+      const sel = document.getElementById('historyPatientFilter');
+      sel.innerHTML = `<option value="ALL">All Family Members</option>`;
+      familyMembers.forEach(m => {
+        sel.innerHTML += `<option value="${m.patientId}">${m.name} (${m.patientId})</option>`;
+      });
+    }
+
+    function renderBookingHistory() {
+      const filterPat = document.getElementById('historyPatientFilter').value;
+      const container = document.getElementById('bookingHistoryList');
+      container.innerHTML = '';
+
+      const list = filterPat === 'ALL' ? bookingsHistory : bookingsHistory.filter(b => b.patientId === filterPat);
+
+      list.forEach(b => {
+        const tokenStr = b.tokenNumber < 10 ? `#0${b.tokenNumber}` : `#${b.tokenNumber}`;
+        container.innerHTML += `
+          <div class="record-card">
+            <div class="record-header">
+              <div>
+                <span class="id-tag">${b.bookingId}</span>
+                <strong style="margin-left:6px;">${b.doctorName} (${b.doctorId})</strong>
+                <span class="badge b-confirmed" style="margin-left:6px;">${b.bookingType}</span>
+              </div>
+              <span class="badge ${b.bookingStatus === 'Completed' ? 'b-completed' : 'b-in'}">${b.bookingStatus}</span>
+            </div>
+            <div class="record-grid">
+              <div><span style="color:var(--text-muted);">Clinic & Location:</span><br><strong>${b.clinicName} (${b.locationCode})</strong></div>
+              <div><span style="color:var(--text-muted);">Booking Date:</span><br><strong>${formatDisplayDate(b.bookingDate)}</strong></div>
+              <div><span style="color:var(--text-muted);">Token Number:</span><br><strong style="color:var(--primary); font-size:14px;">${tokenStr}</strong></div>
+              <div><span style="color:var(--text-muted);">Fee & Payment:</span><br><strong>₹${b.fee} (${b.paymentStatus})</strong></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+              <small style="color:var(--text-muted);">Patient: <strong>${b.patientName} (${b.patientId})</strong></small>
+              <div style="display:flex; gap:8px;">
+                <button class="btn btn-outline btn-sm" onclick="openBookingDetails('${b.bookingId}')">View Details</button>
+                <button class="btn btn-primary btn-sm" onclick="openBookingDetails('${b.bookingId}')"><i class="fa-solid fa-download"></i> Receipt</button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function openBookingDetails(bookingId) {
+      const b = bookingsHistory.find(item => item.bookingId === bookingId);
+      if (!b) return;
+      const tokenStr = b.tokenNumber < 10 ? `#0${b.tokenNumber}` : `#${b.tokenNumber}`;
+
+      document.getElementById('bookingDetailsContent').innerHTML = `
+        <div class="receipt-box">
+          <div style="text-align:center; padding-bottom:10px; border-bottom:1px solid var(--border); margin-bottom:10px;">
+            <strong style="font-size:16px; color:var(--primary);">SUHRAG HEALTHTECH</strong><br>
+            <small style="color:var(--text-muted);">Official OPD Receipt</small>
+          </div>
+          <div class="receipt-row"><span>Booking ID:</span><strong>${b.bookingId}</strong></div>
+          <div class="receipt-row"><span>Location Code:</span><strong>${b.locationCode}</strong></div>
+          <div class="receipt-row"><span>Patient ID & Name:</span><strong>${b.patientId} • ${b.patientName}</strong></div>
+          <div class="receipt-row"><span>Doctor ID & Name:</span><strong>${b.doctorId} • ${b.doctorName}</strong></div>
+          <div class="receipt-row"><span>Clinic ID & Name:</span><strong>${b.clinicId} • ${b.clinicName}</strong></div>
+          <div class="receipt-row"><span>Appointment Date:</span><strong>${formatDisplayDate(b.bookingDate)}</strong></div>
+          <div class="receipt-row"><span>Queue Token:</span><strong style="color:var(--primary);">${tokenStr}</strong></div>
+          <div class="receipt-row"><span>Booking Type:</span><strong>${b.bookingType}</strong></div>
+          <div class="receipt-row"><span>Fee & Payment:</span><strong>₹${b.fee} (${b.paymentStatus})</strong></div>
+          <div class="receipt-row"><span>Booking Status:</span><strong>${b.bookingStatus}</strong></div>
+          <div class="receipt-row"><span>Prescription ID:</span><strong>${b.prescriptionId || 'Pending Consultation'}</strong></div>
+        </div>
+      `;
+      document.getElementById('bookingDetailsModal').style.display = 'flex';
+    }
+
+    // ================= RENDER PRESCRIPTIONS =================
+    function renderPrescriptions() {
+      const container = document.getElementById('fullPrescriptionsList');
+      const preview = document.getElementById('dashboardRxPreview');
+      container.innerHTML = '';
+      preview.innerHTML = '';
+
+      prescriptionsDB.forEach(rx => {
+        const isExpired = CURRENT_DATE > rx.validTill;
+        const eligText = rx.followUpUsed ? "Follow-up Used" : (isExpired ? "Expired" : "Follow-up Eligible");
+        const badgeCls = rx.followUpUsed ? "b-completed" : (isExpired ? "b-cancelled" : "b-in");
+
+        const html = `
+          <div class="record-card">
+            <div class="record-header">
+              <div>
+                <span class="id-tag">${rx.prescriptionId}</span>
+                <strong style="margin-left:6px;">${rx.doctorName} (${rx.doctorId})</strong>
+              </div>
+              <span class="badge ${badgeCls}">${eligText}</span>
+            </div>
+            <div class="record-grid">
+              <div><span style="color:var(--text-muted);">Clinic:</span><br><strong>${rx.clinicName}</strong></div>
+              <div><span style="color:var(--text-muted);">Consultation Date:</span><br><strong>${formatDisplayDate(rx.visitDate)}</strong></div>
+              <div><span style="color:var(--text-muted);">Follow-up Valid Until:</span><br><strong>${formatDisplayDate(rx.validTill)}</strong></div>
+              <div><span style="color:var(--text-muted);">Follow-up Fee:</span><br><strong>₹${rx.followUpFee}</strong></div>
+            </div>
+            <div style="display:flex; gap:8px; justify-content:flex-end;">
+              <button class="btn btn-outline btn-sm" onclick="openPrescriptionModal('${rx.prescriptionId}')">View Prescription</button>
+              <button class="btn btn-primary btn-sm" onclick="alert('Downloading ${rx.prescriptionId}.pdf...')"><i class="fa-solid fa-download"></i> Download Prescription</button>
+            </div>
+          </div>
+        `;
+        container.innerHTML += html;
+        if (!isExpired && !rx.followUpUsed) preview.innerHTML += html;
+      });
+    }
+
+    function openPrescriptionModal(rxId) {
+      const rx = prescriptionsDB.find(r => r.prescriptionId === rxId);
+      if (!rx) return;
+      document.getElementById('rxDetailsContent').innerHTML = `
+        <div class="receipt-box">
+          <div class="receipt-row"><span>Prescription ID:</span><strong>${rx.prescriptionId}</strong></div>
+          <div class="receipt-row"><span>Booking ID:</span><strong>${rx.bookingId}</strong></div>
+          <div class="receipt-row"><span>Patient:</span><strong>${rx.patientName} (${rx.patientId})</strong></div>
+          <div class="receipt-row"><span>Doctor & Clinic:</span><strong>${rx.doctorName} (${rx.clinicId})</strong></div>
+          <div class="receipt-row"><span>Consultation Date:</span><strong>${formatDisplayDate(rx.visitDate)}</strong></div>
+          <div class="receipt-row"><span>Valid Until:</span><strong>${formatDisplayDate(rx.validTill)}</strong></div>
+          <div style="margin-top:10px; padding-top:8px; border-top:1px solid var(--border);">
+            <strong>Diagnosis:</strong> ${rx.diagnosis}<br><br>
+            <strong>Medicines:</strong><pre style="font-family:inherit; margin-top:4px; white-space:pre-wrap;">${rx.medicines}</pre><br>
+            <strong>Notes:</strong> ${rx.instructions}
+          </div>
+        </div>
+      `;
+      document.getElementById('rxDetailsModal').style.display = 'flex';
+    }
+
+    // ================= FAMILY MEMBERS (SEPARATE PATIENT ID & HISTORY) =================
+    function renderFamilyMembers() {
+      const list = document.getElementById('familyMembersList');
+      list.innerHTML = '';
+      familyMembers.forEach(m => {
+        const count = bookingsHistory.filter(b => b.patientId === m.patientId).length;
+        list.innerHTML += `
+          <div class="record-card" style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <span class="id-tag">${m.patientId}</span>
+              <strong style="margin-left:6px;">${m.name}</strong>
+              <span class="badge b-confirmed" style="margin-left:6px;">${m.relation}</span><br>
+              <small style="color:var(--text-muted);">Age: ${m.age} yrs • Gender: ${m.gender} • Mobile: ${m.phone || 'N/A'}</small>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="viewMemberBookings('${m.patientId}')">
+              View History (${count})
+            </button>
+          </div>
+        `;
+      });
+    }
+
+    function addFamilyMember() {
+      const name = document.getElementById('newFamName').value.trim();
+      const relation = document.getElementById('newFamRelation').value;
+      const dob = document.getElementById('newFamDob').value;
+      const gender = document.getElementById('newFamGender').value;
+      const phone = document.getElementById('newFamPhone').value.trim();
+
+      if (!name || !dob) return alert("Kripya Name aur Date of Birth bharein.");
+
+      const birth = new Date(dob);
+      const ref = new Date(CURRENT_DATE);
+      let age = ref.getFullYear() - birth.getFullYear();
+
+      const newPatId = `P${101 + familyMembers.length}`;
+      familyMembers.push({ patientId: newPatId, name, relation, dob, age, gender, phone });
+
+      document.getElementById('newFamName').value = '';
+      document.getElementById('newFamDob').value = '';
+      document.getElementById('newFamPhone').value = '';
+      renderFamilyMembers();
+      alert(`${name} added successfully with Permanent Patient ID: ${newPatId}!`);
+    }
+
+    function viewMemberBookings(patId) {
+      switchView('history');
+      document.getElementById('historyPatientFilter').value = patId;
+      renderBookingHistory();
+    }
+
+    // ================= NOTIFICATIONS =================
+    function renderNotifications() {
+      const box = document.getElementById('notificationsListContainer');
+      box.innerHTML = '';
+      notificationsDB.forEach(n => {
+        box.innerHTML += `
+          <div class="record-card">
+            <div style="display:flex; justify-content:space-between;">
+              <strong>${n.title}</strong>
+              <small style="color:var(--text-muted);">${n.time}</small>
+            </div>
+            <p style="font-size:12.5px; color:#334155; margin-top:4px;">${n.desc}</p>
+          </div>
+        `;
+      });
+    }
+
+    function closeModals() {
+      document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
+    }
+
+    // Initialize Dashboard
+    renderPrescriptions();
+
+
+
+    // ... aapka purana JavaScript code yahan khatam ho raha hoga ...
+
+    const API_BASE = "http://localhost:5000/api/patient";
+
+    // 1. Page khulte hi MongoDB se real data load karna
+    async function loadFromMongoDB() {
+      try {
+        const res = await fetch(`${API_BASE}/P101/records`);
+        const data = await res.json();
+        console.log("MongoDB se data aa gaya:", data);
+
+        if (data.bookings && typeof bookingsHistory !== "undefined") {
+          bookingsHistory = data.bookings;
+          if (typeof renderBookingHistory === "function") renderBookingHistory();
+        }
+        if (data.prescriptions && typeof prescriptionsDB !== "undefined") {
+          prescriptionsDB = data.prescriptions;
+          if (typeof renderPrescriptions === "function") renderPrescriptions();
+        }
+      } catch (err) {
+        console.error("Backend connect nahi hua:", err);
+      }
+    }
+
+    loadFromMongoDB();
+  </script>
+</body>
+</html>
+  </script>
+
+</body>
+</html>

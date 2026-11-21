@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suhrag Healthtech - All-India OPD Queue Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --accent-green: #10b981;
+      --bg: #ffffff;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --danger: #dc2626;
+      --danger-bg: #fee2e2;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Background Organic Shapes (Green curve on top-right, Blue on bottom-left) */
+    .bg-green-shape {
+      position: absolute;
+      top: -60px;
+      right: 0;
+      width: 52%;
+      height: 94%;
+      background: #10b981;
+      border-bottom-left-radius: 260px;
+      z-index: 1;
+    }
+
+    .bg-blue-shape {
+      position: absolute;
+      bottom: 20px;
+      left: -80px;
+      width: 220px;
+      height: 220px;
+      background: #0284c7;
+      border-radius: 50%;
+      z-index: 1;
+      opacity: 0.85;
+    }
+
+    .bg-circle-green {
+      position: absolute;
+      top: 36%;
+      left: 7%;
+      width: 170px;
+      height: 170px;
+      background: #10b981;
+      border-radius: 50%;
+      z-index: 1;
+    }
+
+    /* Top Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 70px;
+      background: #ffffff;
+      position: relative;
+      z-index: 20;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 22px;
+      font-weight: 800;
+      color: #0f172a;
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 34px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #334155;
+      font-size: 15px;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .nav-links a.active, .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .btn-nav {
+      padding: 9px 24px;
+      background: #ffffff;
+      border: 1.5px solid var(--primary);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 14px;
+      border-radius: 24px;
+      cursor: pointer;
+    }
+
+    /* Hero Section Grid */
+    .hero-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 20px 50px;
+      display: grid;
+      grid-template-columns: 1.15fr 0.95fr;
+      gap: 30px;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      width: 100%;
+    }
+
+    /* Left Side: Doctor Cutout + Welcome Info */
+    .left-hero {
+      display: flex;
+      align-items: flex-end;
+      gap: 20px;
+      position: relative;
+    }
+
+    .doctor-cutout-box {
+      width: 290px;
+      position: relative;
+      z-index: 3;
+      flex-shrink: 0;
+    }
+
+    .doctor-cutout-box img {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.12));
+    }
+
+    .welcome-text-area {
+      position: relative;
+      z-index: 4;
+      padding-bottom: 40px;
+    }
+
+    .welcome-text-area h1 {
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 1.12;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+
+    .welcome-text-area h1 span {
+      color: var(--primary);
+    }
+
+    .welcome-text-area p {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      font-weight: 500;
+      line-height: 1.45;
+    }
+
+    .features-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .feature-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .icon-blue { background: #e0f2fe; color: var(--primary); }
+    .icon-green { background: #d1fae5; color: var(--accent-green); }
+
+    /* Right Side: Clean White Login/Register Card */
+    .card-login {
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 34px 30px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.09);
+      max-width: 450px;
+      margin-left: auto;
+      width: 100%;
+      position: relative;
+      z-index: 10;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .card-login-header {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .card-login-header span {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .card-login-header h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-top: 2px;
+    }
+
+    /* Role Toggle Pills */
+    .role-toggle {
+      display: flex;
+      background: #e2e8f0;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 20px;
+    }
+
+    .role-btn {
+      flex: 1;
+      padding: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .role-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 13px;
+      outline: none;
+      background: #ffffff;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-wrapper input {
+      padding-right: 60px;
+    }
+
+    .btn-show {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .forgot-link {
+      text-align: right;
+      margin-top: 6px;
+    }
+
+    .forgot-link a {
+      font-size: 12px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 14px;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.4);
+    }
+
+    .register-footer {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .register-footer a {
+      color: var(--primary);
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    /* Emergency Alert Bar */
+    .emergency-bar {
+      background: var(--danger-bg);
+      color: var(--danger);
+      text-align: center;
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      position: relative;
+      z-index: 20;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 1024px) {
+      .bg-green-shape, .bg-blue-shape, .bg-circle-green { display: none; }
+      .hero-container {
+        grid-template-columns: 1fr;
+        padding: 30px 20px;
+      }
+      .left-hero {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .card-login {
+        margin: 0 auto;
+      }
+      .navbar {
+        padding: 16px 20px;
+      }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Abstract Background Graphic Curves -->
+  <div class="bg-green-shape"></div>
+  <div class="bg-blue-shape"></div>
+  <div class="bg-circle-green"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="#" class="brand-logo">
+      <div class="brand-icon">
+        <svg viewBox="0 0 28 28" fill="none">
+          <path d="M14 2L4 7V14C4 20.5 8.5 25.5 14 27C19.5 25.5 24 20.5 24 14V7L14 2Z" fill="#0284c7"/>
+          <path d="M14 9V19M9 14H19" stroke="white" stroke-width="2.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span>Suhrag Healthtech</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#" class="active">Home</a></li>
+      <li><a href="#">Find Doctors</a></li>
+      <li><a href="#">Live Queue Status</a></li>
+      <li><a href="#">How It Works</a></li>
+    </ul>
+    <button class="btn-nav" onclick="setView('patient-login')">Sign In / Join</button>
+  </nav>
+
+  <!-- Hero Content Section -->
+  <div class="hero-container">
+    
+    <!-- Left Hero: Doctor Image Cutout + Platform Benefits -->
+    <div class="left-hero">
+      <div class="doctor-cutout-box">
+        <!-- Transparent style Indian doctor cutout wearing white coat & stethoscope -->
+        <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=600&h=800&fit=crop&crop=face" alt="Doctor Smiling">
+      </div>
+      
+      <div class="welcome-text-area">
+        <h1>Welcome to<br><span>Suhrag Healthtech</span></h1>
+        <p>Track your OPD Queue live & book tokens from anywhere.</p>
+        
+        <div class="features-list">
+          <div class="feature-item">
+            <div class="feature-icon icon-blue">⏱</div>
+            <span>Live OPD Tracker</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon icon-green">👨‍⚕️</div>
+            <span>Verified Doctors</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon icon-green">🔄</div>
+            <span>Walk-in Sync</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side: Portal Card (Login & All-India Registration) -->
+    <div class="card-login">
+      <div class="card-login-header">
+        <span>Suhrag Healthtech</span>
+        <h2 id="portal-title">Login to Your Account</h2>
+      </div>
+
+      <!-- Role Tabs -->
+      <div class="role-toggle">
+        <button class="role-btn active" id="btn-patient-tab" onclick="toggleRole('patient')">Patient Login</button>
+        <button class="role-btn" id="btn-doctor-tab" onclick="toggleRole('doctor')">Doctor Login</button>
+      </div>
+
+      <!-- 1. Patient Login View -->
+      <form id="view-patient-login" onsubmit="event.preventDefault(); alert('Logged in as Patient successfully!');">
+        <div class="form-group">
+          <label>Registered Mobile Number</label>
+          <input type="tel" pattern="[0-9]{10}" maxlength="10" placeholder="Enter 10-digit mobile number" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="pPassword" placeholder="••••••••" required>
+            <button type="button" class="btn-show" onclick="togglePass('pPassword', this)">Show</button>
+          </div>
+          <div class="forgot-link">
+            <a href="#">Forgot Password?</a>
+          </div>
+        </div>
+        <button type="submit" class="btn-submit">Login as Patient</button>
+        <div class="register-footer">
+          New to Suhrag? <a onclick="setView('patient-reg')">Register here</a>
+        </div>
+      </form>
+
+      <!-- 2. Doctor Login View -->
+      <form id="view-doctor-login" class="hidden" onsubmit="event.preventDefault(); alert('Logged in as Doctor successfully!');">
+        <div class="form-group">
+          <label>Doctor Official Email / Mobile</label>
+          <input type="text" placeholder="doctor@clinic.com or 10-digit mobile" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="dPassword" placeholder="••••••••" required>
+            <button type="button" class="btn-show" onclick="togglePass('dPassword', this)">Show</button>
+          </div>
+          <div class="forgot-link">
+            <a href="#">Forgot Password?</a>
+          </div>
+        </div>
+        <button type="submit" class="btn-submit">Login as Doctor</button>
+        <div class="register-footer">
+          New Doctor? <a onclick="setView('doctor-reg')">Register here</a>
+        </div>
+      </form>
+
+      <!-- 3. Patient Registration View (With Cascading Location) -->
+      <form id="view-patient-reg" class="hidden" onsubmit="handlePatientSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" placeholder="Enter patient name" required>
+          </div>
+          <div class="form-group">
+            <label>Age</label>
+            <input type="number" min="1" max="115" placeholder="e.g. 26" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>State / UT</label>
+            <select id="pRegState" onchange="cascadeDistricts('pRegState', 'pRegDistrict')" required>
+              <option value="">-- Select State --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>District</label>
+            <select id="pRegDistrict" required>
+              <option value="">-- Select State First --</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Village / Locality</label>
+            <input type="text" placeholder="Village / Area name" required>
+          </div>
+          <div class="form-group">
+            <label>PIN Code</label>
+            <input type="tel" pattern="[0-9]{6}" maxlength="6" placeholder="6-digit PIN" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Mobile Number</label>
+            <input type="tel" pattern="[0-9]{10}" maxlength="10" placeholder="10-digit mobile" required>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" minlength="6" placeholder="Min 6 chars" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Complete Patient Registration</button>
+        <div class="register-footer">
+          Already registered? <a onclick="setView('patient-login')">Login here</a>
+        </div>
+      </form>
+
+      <!-- 4. Doctor Registration View -->
+      <form id="view-doctor-reg" class="hidden" onsubmit="handleDoctorSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Doctor Name</label>
+            <input type="text" placeholder="Dr. Full Name" required>
+          </div>
+          <div class="form-group">
+            <label>Specialty</label>
+            <select required>
+              <option value="">-- Select --</option>
+              <option value="General Physician">General Physician</option>
+              <option value="Cardiologist">Cardiologist</option>
+              <option value="Orthopedic">Orthopedic</option>
+              <option value="Dermatologist">Dermatologist</option>
+              <option value="Pediatrician">Pediatrician</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Medical Council Reg. No. (NMC/State)</label>
+          <input type="text" placeholder="e.g. 28471/BCMR/2019" required>
+        </div>
+
+        <div class="form-group">
+          <label>Clinic / Hospital Name</label>
+          <input type="text" placeholder="Clinic name" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Clinic State</label>
+            <select id="dRegState" onchange="cascadeDistricts('dRegState', 'dRegDistrict')" required>
+              <option value="">-- Select State --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Clinic District</label>
+            <select id="dRegDistrict" required>
+              <option value="">-- Select State First --</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fee (₹)</label>
+            <input type="number" value="300" required>
+          </div>
+          <div class="form-group">
+            <label>Daily Seats</label>
+            <input type="number" value="50" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Mobile Number</label>
+            <input type="tel" pattern="[0-9]{10}" maxlength="10" placeholder="10-digit mobile" required>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" minlength="6" placeholder="Min 6 chars" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Submit for Verification</button>
+        <div class="register-footer">
+          Already registered? <a onclick="setView('doctor-login')">Login here</a>
+        </div>
+      </form>
+
+    </div>
+
+  </div>
+
+  <!-- Bottom Emergency Banner -->
+  <div class="emergency-bar">
+    Emergency? Call 112 directly for immediate trauma & ambulance service.
+  </div>
+
+  <script>
+    // All India Location Mapping
+    const indiaLocationData = {
+      "Andhra Pradesh": ["Alluri Sitharama Raju", "Anakapalli", "Ananthapuramu", "Chittoor", "Guntur", "Kakinada", "Krishna", "Kurnool", "Visakhapatnam", "Vizianagaram"],
+      "Assam": ["Cachar", "Dibrugarh", "Guwahati", "Jorhat", "Kamrup", "Nagaon", "Silchar", "Tinsukia"],
+      "Bihar": ["Araria", "Arwal", "Aurangabad", "Banka", "Begusarai", "Bhagalpur", "Bhojpur", "Buxar", "Darbhanga", "East Champaran", "Gaya", "Gopalganj", "Jamui", "Jehanabad", "Kaimur", "Katihar", "Khagaria", "Kishanganj", "Lakhisarai", "Madhepura", "Madhubani", "Munger", "Muzaffarpur", "Nalanda", "Nawada", "Patna", "Purnea", "Rohtas", "Saharsa", "Samastipur", "Saran", "Sheikhpura", "Sheohar", "Sitamarhi", "Siwan", "Supaul", "Vaishali", "West Champaran"],
+      "Chhattisgarh": ["Bilaspur", "Durg", "Korba", "Raigarh", "Raipur", "Rajnandgaon"],
+      "Delhi": ["Central Delhi", "East Delhi", "New Delhi", "North Delhi", "South Delhi", "West Delhi"],
+      "Gujarat": ["Ahmedabad", "Anand", "Gandhinagar", "Jamnagar", "Kutch", "Rajkot", "Surat", "Vadodara"],
+      "Haryana": ["Ambala", "Faridabad", "Gurugram", "Hisar", "Karnal", "Panipat", "Rohtak"],
+      "Jharkhand": ["Bokaro", "Deoghar", "Dhanbad", "Dumka", "Jamshedpur", "Palamu", "Ranchi", "Sahibganj"],
+      "Karnataka": ["Belagavi", "Bengaluru Rural", "Bengaluru Urban", "Dakshina Kannada", "Mysuru", "Udupi"],
+      "Madhya Pradesh": ["Bhopal", "Gwalior", "Indore", "Jabalpur", "Rewa", "Ujjain"],
+      "Maharashtra": ["Ahmednagar", "Chhatrapati Sambhajinagar", "Mumbai City", "Mumbai Suburban", "Nagpur", "Nashik", "Pune", "Thane"],
+      "Odisha": ["Balasore", "Cuttack", "Khordha (Bhubaneswar)", "Puri", "Sambalpur"],
+      "Punjab": ["Amritsar", "Bathinda", "Jalandhar", "Ludhiana", "Mohali", "Patiala"],
+      "Rajasthan": ["Ajmer", "Bikaner", "Jaipur", "Jodhpur", "Kota", "Udaipur"],
+      "Uttar Pradesh": ["Agra", "Aligarh", "Ayodhya", "Bareilly", "Ghaziabad", "Gorakhpur", "Kanpur", "Lucknow", "Meerut", "Noida", "Prayagraj", "Varanasi"],
+      "West Bengal": ["Darjeeling", "Howrah", "Jalpaiguri", "Kolkata", "Malda", "Murshidabad", "North 24 Parganas", "Siliguri", "South 24 Parganas", "Uttar Dinajpur"]
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const states = Object.keys(indiaLocationData).sort();
+      ['pRegState', 'dRegState'].forEach(id => {
+        const select = document.getElementById(id);
+        states.forEach(state => {
+          const opt = document.createElement('option');
+          opt.value = state;
+          opt.textContent = state;
+          select.appendChild(opt);
+        });
+      });
+    });
+
+    function cascadeDistricts(stateId, districtId) {
+      const stateVal = document.getElementById(stateId).value;
+      const distEl = document.getElementById(districtId);
+      distEl.innerHTML = '<option value="">-- Select District --</option>';
+
+      if (stateVal && indiaLocationData[stateVal]) {
+        indiaLocationData[stateVal].forEach(district => {
+          const opt = document.createElement('option');
+          opt.value = district;
+          opt.textContent = district;
+          distEl.appendChild(opt);
+        });
+      } else {
+        distEl.innerHTML = '<option value="">-- Select State First --</option>';
+      }
+    }
+
+    function toggleRole(role) {
+      document.getElementById('btn-patient-tab').classList.toggle('active', role === 'patient');
+      document.getElementById('btn-doctor-tab').classList.toggle('active', role === 'doctor');
+      setView(role + '-login');
+    }
+
+    function setView(viewName) {
+      ['view-patient-login', 'view-doctor-login', 'view-patient-reg', 'view-doctor-reg'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+      });
+
+      const title = document.getElementById('portal-title');
+      const pTab = document.getElementById('btn-patient-tab');
+      const dTab = document.getElementById('btn-doctor-tab');
+
+      if (viewName === 'patient-login') {
+        document.getElementById('view-patient-login').classList.remove('hidden');
+        title.innerText = "Login to Your Account";
+        pTab.classList.add('active');
+        dTab.classList.remove('active');
+      } else if (viewName === 'doctor-login') {
+        document.getElementById('view-doctor-login').classList.remove('hidden');
+        title.innerText = "Doctor Clinic Login";
+        dTab.classList.add('active');
+        pTab.classList.remove('active');
+      } else if (viewName === 'patient-reg') {
+        document.getElementById('view-patient-reg').classList.remove('hidden');
+        title.innerText = "Create Patient Account";
+        pTab.classList.add('active');
+        dTab.classList.remove('active');
+      } else if (viewName === 'doctor-reg') {
+        document.getElementById('view-doctor-reg').classList.remove('hidden');
+        title.innerText = "Doctor Registration";
+        dTab.classList.add('active');
+        pTab.classList.remove('active');
+      }
+    }
+
+    function togglePass(id, btn) {
+      const input = document.getElementById(id);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.innerText = 'Hide';
+      } else {
+        input.type = 'password';
+        btn.innerText = 'Show';
+      }
+    }
+
+    function handlePatientSubmit(e) {
+      e.preventDefault();
+      alert('Patient Account Created Successfully! Please login.');
+      setView('patient-login');
+    }
+
+    function handleDoctorSubmit(e) {
+      e.preventDefault();
+      alert('Doctor Application Submitted for Verification! Please login.');
+      setView('doctor-login');
+    }
+  </script>
+
+</body>
+</html>

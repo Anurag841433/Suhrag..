@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suhrag Healthtech - Admin Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary-blue: #0284c7;
+      --sidebar-bg: #09233b;
+      --bg-page: #f1f6fa;
+      --card-bg: #ffffff;
+      --accent-green: #10b981;
+      --accent-orange: #f59e0b;
+      --accent-purple: #8b5cf6;
+      --accent-red: #ef4444;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ================= LEFT DARK SIDEBAR ================= */
+    .sidebar {
+      width: 270px;
+      background: var(--sidebar-bg);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 8px 18px 8px;
+      text-decoration: none;
+      color: #ffffff;
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-text h2 {
+      font-size: 19px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .brand-text p {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 3px;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 10px;
+      flex: 1;
+    }
+
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 11px 16px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #94a3b8;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .nav-item a:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .nav-item.active a {
+      background: #0284c7;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+    }
+
+    .nav-icon {
+      font-size: 18px;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      background: #ef4444;
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 10px;
+    }
+
+    /* Bottom Trust Badge */
+    .sidebar-trust-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 16px 12px;
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    .trust-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 8px auto;
+      font-size: 22px;
+    }
+
+    .trust-text {
+      font-size: 12px;
+      font-weight: 700;
+      color: #e2e8f0;
+      line-height: 1.3;
+    }
+
+    /* ================= MAIN CONTENT VIEWPORT ================= */
+    .main-viewport {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      height: 100vh;
+    }
+
+    /* Top Header */
+    .top-header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 14px 34px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .menu-icon-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #334155;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f1f5f9;
+      padding: 9px 16px;
+      border-radius: 20px;
+      width: 320px;
+    }
+
+    .search-box input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 13px;
+      width: 100%;
+      color: var(--text-dark);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .header-bell {
+      position: relative;
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    .bell-count {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: var(--accent-red);
+      color: white;
+      font-size: 10px;
+      font-weight: 800;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .user-profile-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #09233b;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .admin-name-role h4 {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-dark);
+      line-height: 1.1;
+    }
+
+    .admin-name-role span {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Content Area */
+    .content-container {
+      padding: 24px 34px 40px 34px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .dashboard-headline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .headline-titles h1 {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+
+    .headline-titles p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      font-weight: 600;
+    }
+
+    .date-tag {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* 4 Top Metric Cards */
+    .metric-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .metric-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+    }
+
+    .metric-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .icon-blue { background: #e0f2fe; color: #0284c7; }
+    .icon-green { background: #d1fae5; color: #10b981; }
+    .icon-orange { background: #fef3c7; color: #f59e0b; }
+    .icon-purple { background: #ede9fe; color: #8b5cf6; }
+
+    .metric-info {
+      flex: 1;
+    }
+
+    .metric-info span {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .metric-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .metric-value-row h3 {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--text-dark);
+    }
+
+    .trend-indicator {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent-green);
+    }
+
+    /* Middle 2-Column Grid */
+    .grid-middle {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 20px;
+    }
+
+    .ui-panel {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+
+    .chart-container-wrap {
+      height: 230px;
+      position: relative;
+    }
+
+    /* Verification Requests List */
+    .verify-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .verify-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f8fafc;
+    }
+
+    .verify-item:last-child {
+      border-bottom: none;
+    }
+
+    .verify-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 1.5px solid var(--border);
+    }
+
+    .verify-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .verify-details {
+      flex: 1;
+    }
+
+    .verify-details h4 {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+
+    .verify-details p {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-top: 1px;
+    }
+
+    .verify-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-view-doc {
+      background: #f1f5f9;
+      color: var(--primary-blue);
+      border: none;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-approve-doc {
+      background: var(--primary-blue);
+      color: white;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-approve-doc:hover {
+      background: #0369a1;
+    }
+
+    /* Bottom 2-Column Grid */
+    .grid-bottom {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 20px;
+    }
+
+    /* Recent Bookings Table */
+    .booking-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .booking-table th {
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      padding: 8px 6px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .booking-table td {
+      padding: 10px 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      border-bottom: 1px solid #f8fafc;
+    }
+
+    .token-text {
+      color: var(--primary-blue);
+      font-weight: 800;
+    }
+
+    .badge-status {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .status-confirmed { background: #d1fae5; color: #065f46; }
+    .status-waiting { background: #fef3c7; color: #92400e; }
+    .status-queue { background: #fee2e2; color: #991b1b; }
+
+    /* Quick Action 4 Cards */
+    .quick-actions-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .quick-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 8px;
+      text-align: center;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .quick-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .qc-blue { background: #e0f2fe; color: #0284c7; }
+    .qc-green { background: #d1fae5; color: #10b981; }
+    .qc-purple { background: #ede9fe; color: #8b5cf6; }
+    .qc-orange { background: #fef3c7; color: #f59e0b; }
+
+    .qc-icon {
+      font-size: 22px;
+    }
+
+    .qc-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    @media (max-width: 1024px) {
+      .metric-cards-grid { grid-template-columns: repeat(2, 1fr); }
+      .grid-middle, .grid-bottom { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= LEFT DARK SIDEBAR ================= -->
+  <aside class="sidebar">
+    <a href="#" class="sidebar-brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 32 32" fill="none" style="width: 32px; height: 32px;">
+          <path d="M16 2L5 7V16C5 23.5 10 29.5 16 31C22 29.5 27 23.5 27 16V7L16 2Z" fill="#10b981"/>
+          <path d="M16 10V22M10 16H22" stroke="white" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h2>Suhrag Healthtech</h2>
+        <p>Better Health, Brighter Tomorrow</p>
+      </div>
+    </a>
+
+    <ul class="nav-list">
+      <li class="nav-item active">
+        <a href="#"><span class="nav-icon">🏠</span> Dashboard</a>
+      </li>
+      <li class="nav-item">
+        <a href="#"><span class="nav-icon">🛡</span> Verify Doctors <span class="nav-badge">12</span></a>
+      </li>
+      <li class="nav-item">
+        <a href="#"><span class="nav-icon">👥</span> Manage Patients</a>
+      </li>
+      <li class="nav-item">
+        <a href="#"><span class="nav-icon">👨‍⚕️</span> Manage Doctors</a>
+      </li>
+      <li class="nav-item">
+        <a href="#"><span class="nav-icon">💬</span> Complaints <span class="nav-badge">3</span></a>
+      </li>
+      <li class="nav-item">
+        <a href="#"><span class="nav-icon">💳</span> Payments & Records</a>
+      </li>
+      <li class="nav-item">
+        <a href="#"><span class="nav-icon">📊</span> Reports & Analytics</a>
+      </li>
+      <li class="nav-item">
+        <a href="#"><span class="nav-icon">⚙️</span> Settings</a>
+      </li>
+      <li class="nav-item">
+        <a href="#"><span class="nav-icon">🚪</span> Logout</a>
+      </li>
+    </ul>
+
+    <!-- Bottom Mission Badge -->
+    <div class="sidebar-trust-box">
+      <div class="trust-icon">🛡</div>
+      <div class="trust-text">Building a Healthier<br>India Together</div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN VIEWPORT ================= -->
+  <main class="main-viewport">
+    
+    <!-- Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="menu-icon-btn">☰</button>
+        <div class="search-box">
+          <span>🔍</span>
+          <input type="text" placeholder="Search anything...">
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="header-bell">
+          🔔
+          <span class="bell-count">5</span>
+        </div>
+        <div class="user-profile-badge">
+          <div class="avatar-circle">A</div>
+          <div class="admin-name-role">
+            <h4>Admin</h4>
+            <span>Super Admin</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Body -->
+    <div class="content-container">
+
+      <!-- Headline -->
+      <div class="dashboard-headline">
+        <div class="headline-titles">
+          <h1>Admin Dashboard</h1>
+          <p>Welcome back, Admin! 👋</p>
+        </div>
+        <div class="date-tag">
+          <span>📅</span> Saturday, 26 April 2025 | 11:24 AM
+        </div>
+      </div>
+
+      <!-- 4 Top Metric Cards -->
+      <div class="metric-cards-grid">
+        <div class="metric-card">
+          <div class="metric-icon icon-blue">👥</div>
+          <div class="metric-info">
+            <span>Total Patients</span>
+            <div class="metric-value-row">
+              <h3>24,850</h3>
+              <span class="trend-indicator">↑ 12%</span>
+            </div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon icon-green">👨‍⚕️</div>
+          <div class="metric-info">
+            <span>Total Doctors</span>
+            <div class="metric-value-row">
+              <h3>1,250</h3>
+              <span class="trend-indicator">↑ 8%</span>
+            </div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon icon-orange">⏱</div>
+          <div class="metric-info">
+            <span>Pending Doctors</span>
+            <div class="metric-value-row">
+              <h3>124</h3>
+              <span class="trend-indicator">↑ 5%</span>
+            </div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon icon-purple">📅</div>
+          <div class="metric-info">
+            <span>Total Bookings</span>
+            <div class="metric-value-row">
+              <h3>48,720</h3>
+              <span class="trend-indicator">↑ 15%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Middle 2-Column: Overview Chart + Verification Requests -->
+      <div class="grid-middle">
+        
+        <!-- Platform Overview Chart -->
+        <div class="ui-panel">
+          <div class="panel-header">
+            <div class="panel-title">Platform Overview</div>
+          </div>
+          <div class="chart-container-wrap">
+            <canvas id="overviewChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Doctor Verification Requests -->
+        <div class="ui-panel">
+          <div class="panel-header">
+            <div class="panel-title">Doctor Verification Requests</div>
+            <a href="#" style="font-size: 13px; color: var(--primary-blue); text-decoration: none; font-weight: 700;">View All →</a>
+          </div>
+
+          <div class="verify-list">
+            <!-- Doctor 1 -->
+            <div class="verify-item">
+              <div class="verify-avatar">
+                <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&h=150&fit=crop&crop=face" alt="Dr. Rahul">
+              </div>
+              <div class="verify-details">
+                <h4>Dr. Rahul Kumar</h4>
+                <p>MBBS, General Physician • Applied: 2 hours ago</p>
+              </div>
+              <div class="verify-actions">
+                <button class="btn-view-doc">View</button>
+                <button class="btn-approve-doc" onclick="alert('Dr. Rahul Kumar Approved!');">Approve</button>
+              </div>
+            </div>
+
+            <!-- Doctor 2 -->
+            <div class="verify-item">
+              <div class="verify-avatar">
+                <img src="https://images.unsplash.com/photo-1594824813633-890f507b55f0?w=150&h=150&fit=crop&crop=face" alt="Dr. Priya">
+              </div>
+              <div class="verify-details">
+                <h4>Dr. Priya Sharma</h4>
+                <p>MD, Dermatologist • Applied: 3 hours ago</p>
+              </div>
+              <div class="verify-actions">
+                <button class="btn-view-doc">View</button>
+                <button class="btn-approve-doc" onclick="alert('Dr. Priya Sharma Approved!');">Approve</button>
+              </div>
+            </div>
+
+            <!-- Doctor 3 -->
+            <div class="verify-item">
+              <div class="verify-avatar">
+                <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150&h=150&fit=crop&crop=face" alt="Dr. Amit">
+              </div>
+              <div class="verify-details">
+                <h4>Dr. Amit Singh</h4>
+                <p>MS, Orthopedic • Applied: 4 hours ago</p>
+              </div>
+              <div class="verify-actions">
+                <button class="btn-view-doc">View</button>
+                <button class="btn-approve-doc" onclick="alert('Dr. Amit Singh Approved!');">Approve</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom 2-Column: Recent Bookings + Quick Actions -->
+      <div class="grid-bottom">
+        
+        <!-- Recent Bookings Table -->
+        <div class="ui-panel">
+          <div class="panel-header">
+            <div class="panel-title">Recent Bookings</div>
+            <a href="#" style="font-size: 13px; color: var(--primary-blue); text-decoration: none; font-weight: 700;">View All →</a>
+          </div>
+
+          <table class="booking-table">
+            <thead>
+              <tr>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Token</th>
+                <th>Status</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Rahul Verma</td>
+                <td>Dr. Neha Gupta</td>
+                <td class="token-text">T#045</td>
+                <td><span class="badge-status status-confirmed">Confirmed</span></td>
+                <td>11:15 AM</td>
+              </tr>
+              <tr>
+                <td>Sneha Patel</td>
+                <td>Dr. Amit Singh</td>
+                <td class="token-text">T#044</td>
+                <td><span class="badge-status status-waiting">Waiting</span></td>
+                <td>11:10 AM</td>
+              </tr>
+              <tr>
+                <td>Amit Kumar</td>
+                <td>Dr. Priya Sharma</td>
+                <td class="token-text">T#043</td>
+                <td><span class="badge-status status-confirmed">Confirmed</span></td>
+                <td>11:05 AM</td>
+              </tr>
+              <tr>
+                <td>Pooja Singh</td>
+                <td>Dr. Rahul Kumar</td>
+                <td class="token-text">T#042</td>
+                <td><span class="badge-status status-queue">In Queue</span></td>
+                <td>11:00 AM</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="ui-panel">
+          <div class="panel-header">
+            <div class="panel-title">Quick Actions</div>
+          </div>
+
+          <div class="quick-actions-row">
+            <div class="quick-card qc-blue" onclick="alert('Opening Add Doctor Form...');">
+              <span class="qc-icon">➕</span>
+              <span class="qc-title">Add Doctor</span>
+            </div>
+            <div class="quick-card qc-green" onclick="alert('Manage Patients Directory...');">
+              <span class="qc-icon">👥</span>
+              <span class="qc-title">Manage Patients</span>
+            </div>
+            <div class="quick-card qc-purple" onclick="alert('Reports & Analytics View...');">
+              <span class="qc-icon">📊</span>
+              <span class="qc-title">View Reports</span>
+            </div>
+            <div class="quick-card qc-orange" onclick="alert('Review User Complaints...');">
+              <span class="qc-icon">💬</span>
+              <span class="qc-title">View Complaints</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Chart Configuration -->
+  <script>
+    const ctx = document.getElementById('overviewChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [
+          {
+            label: 'Patients',
+            data: [13000, 19000, 24000, 25000, 31000, 33000, 36000],
+            borderColor: '#0284c7',
+            backgroundColor: '#0284c7',
+            tension: 0.35,
+            pointRadius: 4,
+            fill: false
+          },
+          {
+            label: 'Bookings',
+            data: [7000, 12000, 15000, 18000, 22000, 23000, 25000],
+            borderColor: '#8b5cf6',
+            backgroundColor: '#8b5cf6',
+            tension: 0.35,
+            pointRadius: 4,
+            fill: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            align: 'end',
+            labels: {
+              boxWidth: 10,
+              usePointStyle: true
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) {
+                return (value / 1000) + 'k';
+              }
+            },
+            grid: {
+              color: '#f1f5f9'
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
